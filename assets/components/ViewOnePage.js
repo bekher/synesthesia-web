@@ -12,6 +12,11 @@ var css = {
   sidepanel: {
     top: '35px',
     width: '173px'
+  },
+  image: {
+    'max-width': '100%',
+    height: 'auto',
+    width: 'auto'
   }
 
 };
@@ -71,7 +76,7 @@ export default class ViewOnPage extends React.Component {
                   { this.state.song.completed ?
                     <div>
                       <p>Output image:</p>
-                      <img src={'/outputs/images/'+this.state.song.filename+'.png'} />
+                      <img src={'/outputs/images/'+this.state.song.filename+'.png'} style = {css.image}/>
                       <p>Transformed audio (This may take a while):</p>
                       <audio controls>
                         <source src={'/outputs/audio/'+this.state.song.filename + '.mp3'} type="audio/mpeg" />
