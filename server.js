@@ -2,6 +2,8 @@ var path = require('path');
 var config = require('./config');
 var express = require('express');
 var webpack = require('webpack');
+var util = require('util');
+var fs = require('fs');
 var wpConfig = require('./webpack.config');
 var _ = require('lodash');
 
@@ -20,6 +22,9 @@ var compiler = webpack(wpConfig);
 
 var io = require('socket.io')(server);
 var ioroutes = require('./io.js');
+
+//var fileupload = require('fileupload').createFileUpload(__dirname+'/uploads').middleware;
+var multer = require('multer');
 ioroutes(io);
 
 app.socket = io;
@@ -36,6 +41,10 @@ app.use(require('webpack-dev-middleware')(compiler, {
   publicPath: wpConfig.output.publicPath
 }));
 
+app.use(multer({
+  dest: "./uploads"
+}).any());
+
 var port = 8302;
 var host = '0.0.0.0'
 
@@ -45,6 +54,12 @@ app.set('view engine', 'html');
 
 app.get('/css/uikit.min.js', function (req,res) {
   res.sendFile(path.join(__dirname, 'build/css/uikit.min.css'));
+});
+
+app.post('/upload', function(req, res) {
+  console.log(util.inspect(req.files));
+  console.log('uploading...');
+  res.redirect('/#/upload');
 });
 
 app.get('*', function(req, res) {
