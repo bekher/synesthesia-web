@@ -50,7 +50,9 @@ app.get('/css/uikit.min.js', function (req,res) {
   res.sendFile(path.join(__dirname, 'build/css/uikit.min.css'));
 });
 
-
+var myRandom = function(l, h) {
+  return Math.floor(Math.random() * (h-l) + l);
+}
 app.post('/upload', function(req, res) {
   console.log('uploading...');
   //var mp3data = fs.readFileSync(__dirname+'/'+req.files[0].path);
@@ -74,7 +76,7 @@ app.post('/upload', function(req, res) {
             var songobj = {
               title: title,
               transform: 'None',
-              length: '3:21',
+              length: '3:'+String(myRandom(1,59)),
               created: new Date(),
               format: 'mp3',
               artist: String(data.artist) || 'No artist',
@@ -107,7 +109,9 @@ app.get('/transform/:id/:type', function(req, res) {
       console.log('updated item');
       console.log(item);
     }
-  });
+  }
+  //child_process.
+);
   res.redirect('/app/#/view/'+req.params.id);
 });
 
