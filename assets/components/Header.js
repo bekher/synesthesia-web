@@ -5,7 +5,7 @@ export default class Header extends React.Component {
   render() {
     return (
       <nav className="uk-navbar uk-margin-large-bottom" >
-        <a className="uk-navbar-brand">Synestesia</a>
+        <a className="uk-navbar-brand">Synesthesia</a>
         <ul className="uk-navbar-nav">
           <li>
             <a href="/app/#/">Home</a>

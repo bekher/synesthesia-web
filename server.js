@@ -95,7 +95,6 @@ app.post('/upload', function(req, res) {
           }
         });
       res.redirect('/app/#/view/'+filename);
-
     }
   });
 });
@@ -108,6 +107,14 @@ app.get('/transform/:id/:type', function(req, res) {
     } else {
       console.log('updated item');
       console.log(item);
+      exec('python '+__dirname+'/dream.py '+ __dirname+'/uploads/'+req.params.id+' '+req.params.type, function(err, stdout, stderr) {
+          console.log('stdout: ${stdout}');
+          console.log('stderr: ${stderr}');
+          if (err) {
+              console.log('error '+err);
+          }
+
+      });
     }
   }
   //child_process.
@@ -145,8 +152,8 @@ app.use(function(err, req, res, next) {
 });
 app.use('/inputs/audio', express.static(__dirname+'/uploads'));
 app.use('/inputs/images', express.static(__dirname+'/inputs/images'));
-app.use('/outputs/audio', express.static(__dirname+'./inputs/audio'));
-app.use('/outputs/images', express.static(__dirname+'./inputs/images'));
+app.use('/outputs/audio', express.static(__dirname+'/outputs/audio'));
+app.use('/outputs/images', express.static(__dirname+'/outputs/images'));
 
 
 server.listen(port, host, function (err) {

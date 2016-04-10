@@ -70,13 +70,11 @@ export default class ViewOnPage extends React.Component {
 
                   { this.state.song.completed ?
                     <div>
-                      <p>Input image:</p>
-                      <img src={'input/images/'+this.state.song.filename+'.png'} />
                       <p>Output image:</p>
-                      <img src={'output/images/'+this.state.song.filename+'.png'} />
-                      <p>Transformed audio:</p>
+                      <img src={'/outputs/images/'+this.state.song.filename+'.png'} />
+                      <p>Transformed audio (This may take a while):</p>
                       <audio controls>
-                        <source src={'/inputs/audio/'+this.state.song.filename + '.mp3'} type="audio/mpeg" />
+                        <source src={'/outputs/audio/'+this.state.song.filename + '.mp3'} type="audio/mpeg" />
                         You browser does not support audio...
                       </audio>
                     </div>
@@ -92,6 +90,7 @@ export default class ViewOnPage extends React.Component {
                         <li><a href={'/transform/'+this.state.song.filename+'/speed'} >Speed</a></li>
                         <li><a href={'/transform/'+this.state.song.filename+'/extend'} >Extend</a></li>
                         <li><a href={'/transform/'+this.state.song.filename+'/pitch'} >Pitch</a></li>
+                        <li><a href={'/transform/'+this.state.song.filename+'/dream'} >Google Deep Dream</a></li>
                       </ul>
                     </div>
                     </div>
