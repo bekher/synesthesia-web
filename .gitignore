@@ -1,0 +1,15 @@
+# Node
+.nodemonignore
+npm-debug*.log
+node_modules/*
+
+# Bower
+.bower-*/
+bower_components
+
+# Vim & etc
+*.swo
+*.swp
+*.module-cache
+
+debug/*
