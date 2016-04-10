@@ -10,10 +10,11 @@ var _ = require('lodash');
 var SongSchema = Schema({
   name: String,
   transform: String,
-  author: String,
   length: Number, //seconds
   created: Date,
   format: String,
+  artist: String,
+  album: String,
   completed: Boolean
 
 });
