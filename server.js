@@ -100,6 +100,14 @@ app.post('/upload', function(req, res) {
 
 app.get('/transform/:id/:type', function(req, res) {
   console.log('got '+req.params.id+' with '+req.params.type);
+  SongSchema.findOneAndUpdate({'filename': req.params.id}, {'completed': true, 'transform':req.params.type},{upsert:true}, function(err, item) {
+    if (err) {
+      console.log('Mongo error while updating '+err)
+    } else {
+      console.log('updated item');
+      console.log(item);
+    }
+  });
   res.redirect('/app/#/view/'+req.params.id);
 });
 

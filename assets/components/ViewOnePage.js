@@ -29,7 +29,7 @@ export default class ViewOnPage extends React.Component {
       song : null
     };
     socket.on(Events.getOneSong, function(resp) {
-      console.log('data'+resp.data);
+      console.log(resp.data);
       var song = resp.data || null;
 
       _this.setState({
@@ -62,13 +62,14 @@ export default class ViewOnPage extends React.Component {
                 <p>Format: {this.state.song.format}</p>
               </div>
               <div className="uk-width-medium-1-4">
-                  { this.state.song.complete != true ?
-                    <div>
                       <p>Original:</p>
                       <audio controls>
                         <source src={'/inputs/audio/'+this.state.song.filename} type="audio/mpeg" />
                         You browser does not support audio...
                       </audio>
+
+                  { this.state.song.completed ?
+                    <div>
                       <p>Input image:</p>
                       <img src={'input/images/'+this.state.song.filename+'.png'} />
                       <p>Output image:</p>
