@@ -10,6 +10,7 @@ module.exports = {
   db: 'mongodb://localhost/synes-dev',
   mongoose: {
     debug: true
-  }
+  },
+  dev: false
 
 }

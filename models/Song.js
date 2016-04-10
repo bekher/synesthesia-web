@@ -8,14 +8,24 @@ var async = require('async');
 var _ = require('lodash');
 
 var SongSchema = Schema({
-  name: String,
+  title: {
+    type: String,
+    index: true,
+    unique: true
+  },
   transform: String,
-  length: Number, //seconds
+  length: String, //seconds
   created: Date,
   format: String,
   artist: String,
   album: String,
   completed: Boolean,
-  filename: String
+  filename: {
+    type: String,
+    index: true,
+    unique: true
+  }
 
 });
+
+mongoose.model('Song', SongSchema);

@@ -1,3 +1,4 @@
 module.exports = {
-  getAllSongs: 'getAllSongs' 
+  getAllSongs: 'getAllSongs',
+  getOneSong: 'getOneSong'
 };

@@ -32,13 +32,13 @@ export default class UploadPage extends React.Component {
 
       allcomplete: function(response) {
 
-        bar.css("width", "100%").text("100%");
+        bar.css("width", "100%").text("100%, processing... please wait");
+
 
         setTimeout(function(){
           progressbar.addClass("uk-hidden");
-        }, 250);
+        }, 2500);
 
-        alert("Upload Completed")
       }
     };
 
@@ -51,7 +51,7 @@ export default class UploadPage extends React.Component {
     return (
       <div className="uk-grid">
         <div className="uk-width-1-1 uk-row-first">
-          <p> Upload Thing</p> 
+          <p> Upload mp3</p> 
           <form className="uk-form">
           <input type="text" />
           <p></p>

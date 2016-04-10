@@ -46,8 +46,8 @@ export default class BrowsePage extends React.Component {
             <thead>
               <tr>
                 <th>Transform</th>
-                <th>Name</th>
-                <th>Author</th>
+                <th>Title</th>
+                <th>Artist</th>
                 <th>Length</th>
                 <th>Date</th>
                 <th>Format</th>
@@ -57,10 +57,10 @@ export default class BrowsePage extends React.Component {
             {this.state.songs.map(function(song) {
               return <tr key={song._id}>
                   <td>{song.transform}</td>
-                  <td>{song.name}</td>
-                  <td>{song.author}</td>
+                  <td><a href={'/app/#/view/'+song.filename}>{song.title}</a></td>
+                  <td>{song.artist}</td>
                   <td>{song.length}</td>
-                  <td>{song.date}</td>
+                  <td>{song.created}</td>
                   <td>{song.format}</td>
                 </tr>
             }) }
