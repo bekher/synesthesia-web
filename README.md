@@ -1,7 +1,9 @@
 # Synesthesia Full Stack
 
 
-Mongo is required
+Deps: Mongodb, nodejs, python, sox, ffmpeg, imagemagick, scikit, pil, 
+
+After above deps are installed, be sure to run:
 
 `npm install`
 
