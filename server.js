@@ -98,8 +98,8 @@ app.post('/upload', function(req, res) {
   });
 });
 
-app.get('/transform/:id', function(req, res) {
-  console.log('got'+req.params.id);
+app.get('/transform/:id/:type', function(req, res) {
+  console.log('got '+req.params.id+' with '+req.params.type);
   res.redirect('/app/#/view/'+req.params.id);
 });
 

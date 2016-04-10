@@ -69,16 +69,28 @@ export default class ViewOnPage extends React.Component {
                         <source src={'/inputs/audio/'+this.state.song.filename} type="audio/mpeg" />
                         You browser does not support audio...
                       </audio>
-                      <img src={'output/images/'+this.state.song.filename} />
+                      <p>Input image:</p>
+                      <img src={'input/images/'+this.state.song.filename+'.png'} />
+                      <p>Output image:</p>
+                      <img src={'output/images/'+this.state.song.filename+'.png'} />
+                      <p>Transformed audio:</p>
+                      <audio controls>
+                        <source src={'/inputs/audio/'+this.state.song.filename + '.mp3'} type="audio/mpeg" />
+                        You browser does not support audio...
+                      </audio>
                     </div>
                     :
                     <div className="uk-sticky-placeholder" style={css.stickyplace}>
                       <div className='uk-panel uk-panel-box uk-active' style={css.sidepanel} data-uk-sticky="top{:35}">
                       <ul className="uk-nav uk-side-nav">
                         <li className="uk-nav-header">Apply a trnasform</li>
-                        <li>T1</li>
-                        <li>T2</li>
-                        <li>T3</li>
+                        <li><a href={'/transform/'+this.state.song.filename+'/metallic'} >Metallic</a></li>
+                        <li><a href={'/transform/'+this.state.song.filename+'/reverse'} >Reverse</a></li>
+                        <li><a href={'/transform/'+this.state.song.filename+'/shuffle'} >Shuffle</a></li>
+                        <li><a href={'/transform/'+this.state.song.filename+'/decay'} >Decay</a></li>
+                        <li><a href={'/transform/'+this.state.song.filename+'/speed'} >Speed</a></li>
+                        <li><a href={'/transform/'+this.state.song.filename+'/extend'} >Extend</a></li>
+                        <li><a href={'/transform/'+this.state.song.filename+'/pitch'} >Pitch</a></li>
                       </ul>
                     </div>
                     </div>
