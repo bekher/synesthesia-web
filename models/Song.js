@@ -15,6 +15,7 @@ var SongSchema = Schema({
   format: String,
   artist: String,
   album: String,
-  completed: Boolean
+  completed: Boolean,
+  filename: String
 
 });
