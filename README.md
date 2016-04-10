@@ -1,7 +1,7 @@
-# Synesthesia Frontend
+# Synesthesia Full Stack
 
 
-Mongo is required, Synesthesia backend is required
+Mongo is required
 
 `npm install`
 
