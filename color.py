@@ -20,6 +20,27 @@ def shuffle(arr):
     random.shuffle(arr)
     return arr.flatten()
 
+def redshift(arr):
+    i = 0
+    while i < arr.length:
+        arr[i] = 255
+        arr[i + 3] = 255
+        i += 12
+
+def greenshift(arr):
+    i = 0
+    while i < arr.length:
+        arr[i + 1] = 255
+        arr[i + 4] = 255
+        i += 12
+
+def blueshift(arr):
+    i = 0
+    while i < arr.length:
+        arr[i + 5] = 255
+        arr[i + 8] = 255
+        i += 12
+
 def decay(arr, jmp=32):
     arr = array([arr[i:i+4] for i in range(0, len(arr), 4)])
     i = 0
@@ -97,6 +118,12 @@ for y in range(0, im.size[1]):
 arr2 = array(arr)
 
 if(transform == "metallic"):
+    arr = metallic(arr2)
+if(transform == "redshift"):
+    arr = metallic(arr2)
+if(transform == "blueshift"):
+    arr = metallic(arr2)
+if(transform == "greenshift"):
     arr = metallic(arr2)
 elif(transform == "reverse"):
     arr = reverse(arr2)
