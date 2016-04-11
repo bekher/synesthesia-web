@@ -1,5 +1,5 @@
 {
-  "name": "synestesia",
+  "name": "synesthesia",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,7 +8,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "alt": "^0.18.4",
     "async": "^2.0.0-rc.3",
