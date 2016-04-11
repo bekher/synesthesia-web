@@ -11,6 +11,7 @@ def metallic(arr):
         if (i % 128 > 63):
             arr[i] = 0
     return arr
+
 def reverse(arr):
     return array([arr[i:i+4] for i in range(0, len(arr), 4)])[::-1].flatten()
 
@@ -105,8 +106,7 @@ def pitchshift(snd_array, n, window_size=2**13, h=2**11):
 name = sys.argv[1]
 transform = sys.argv[2]
 
-
-im = Image.open(name) #Can be many different formats.
+im = Image.open(name) 
 pix = im.load()
 arr = []
 stret = 1
@@ -144,39 +144,6 @@ elif(transform=="speed"):
 elif(transform == "pitch"):
     arr = pitchshift(arr2, 2)
     stret = 2
-'''
-print("Starting second pass...")
-i = 0
-#print(len(arr))
-#arr = resample(array(arr), 0.75, "sinc_fastest").astype(array(arr).dtype)
-#print(len(arr))
-arr2 = array([arr[i:i+4] for i in range(0, len(arr), 4)])
-bits = []
-
-arr = pitchshift(arr, 2)#.flatten()
-print(len(arr))
-print(arr2[0:5])
-print(arr[0:5])
-#print(Counter(bits))
-#arr.reverse()
-i = 0
-'''
-'''
-im = Image.open("pitch.png") #Can be many different formats.
-pix = im.load()
-print im.size #Get the width and height of the image for iterating over
-arr2 = []
-print("Starting first pass...")
-for x in range(0, im.size[0]):
-    for y in range(0, im.size[1]):
-        arr2.append(pix[x,y][0])
-        arr2.append(pix[x,y][1])
-        arr2.append(pix[x,y][2])
-
-for i in range(0, len(arr)):
-    if(i < 100):
-        print(arr[i] - arr2[i])
-'''
 i = 0
 print("Rewriting file...")
 for y in range(0, im.size[1]/stret):
