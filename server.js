@@ -107,7 +107,9 @@ app.get('/transform/:id/:type', function(req, res) {
     } else {
       console.log('updated item');
       console.log(item);
-      exec('python '+__dirname+'/dream.py '+ __dirname+'/uploads/'+req.params.id+' '+req.params.type, function(err, stdout, stderr) {
+      var target = 'python '+__dirname+'/dream.py '+ __dirname+'/uploads/'+req.params.id+' '+req.params.type
+      console.log('executing: '+target);
+      exec(target, function(err, stdout, stderr) {
           console.log('stdout: ${stdout}');
           console.log('stderr: ${stderr}');
           if (err) {

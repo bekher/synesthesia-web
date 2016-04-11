@@ -95,6 +95,9 @@ export default class ViewOnPage extends React.Component {
                         <li><a href={'/transform/'+this.state.song.filename+'/speed'} >Speed</a></li>
                         <li><a href={'/transform/'+this.state.song.filename+'/extend'} >Extend</a></li>
                         <li><a href={'/transform/'+this.state.song.filename+'/pitch'} >Pitch</a></li>
+                        <li><a href={'/transform/'+this.state.song.filename+'/redshift'} >Red Shift</a></li>
+                        <li><a href={'/transform/'+this.state.song.filename+'/blueshift'} >Blue Shift</a></li>
+                        <li><a href={'/transform/'+this.state.song.filename+'/greenshift'} >Green Shift</a></li>
                         <li><a href={'/transform/'+this.state.song.filename+'/dream'} >Google Deep Dream</a></li>
                       </ul>
                     </div>
