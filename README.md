@@ -17,7 +17,7 @@ Then, you can start Synesthesia with:
 
 ## Usage
 
-Synesthesia was designed to apply image transformations to songs as an experiment to listen to the result. With Synesthesia, you can tint a song red, listen to your profile picture, and apply a host of pixel-level transformations to a song.  Once the app starts, upload a song on the web app, choose a transformation! Wait a minute or two (songs are big pictures!), and the app will display the result. 
+Synesthesia was designed to apply image transformations to songs as an experiment to listen to the result. With Synesthesia, you can tint a song red, listen to your profile picture, and apply a host of pixel-level transformations to a song.  Once the app starts, upload a song on the web app, choose a transformation! Wait a minute or two (songs are big pictures!), and the app will display the result. Note that although Google's Deep Dream is listed as an option, it has been intentionally disabled due to intensive processing required. 
 
 ## How it works
 
