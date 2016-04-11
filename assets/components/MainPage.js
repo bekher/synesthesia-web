@@ -11,7 +11,7 @@ export default class is extends React.Component {
 
   render() {
     return (
-      <DocumentTitle title='Synestesia'>
+      <DocumentTitle title='Synesthesia'>
         <div className='MainPage'>
           <div className='uk-container uk-container-center uk-margin-top uk-margin-large-bottom'>
             <Header />
