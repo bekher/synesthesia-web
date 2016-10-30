@@ -25,25 +25,23 @@ def redshift(arr):
     i = 0
     while i < len(arr):
         arr[i] = 255
-        arr[i + 3] = 255
-        i += 12
-
+        i += 4
     return arr
 
 def greenshift(arr):
     i = 0
+    print "Array length: %d" % len(arr)
     while i < len(arr):
-        arr[i + 4] = 255
-        arr[i + 1] = 255
-        i += 12
+        arr[i + 1] = min(arr[i + 1] + 15, 255)
+        i += 4
     return arr
 
 def blueshift(arr):
     i = 0
+    print "Blueshifting..."
     while i < len(arr):
-        arr[i + 8] = 255
-        arr[i + 5] = 255
-        i += 12
+        arr[i + 2] = 255
+        i += 4
     return arr
 
 def decay(arr, jmp=32):
@@ -110,15 +108,19 @@ im = Image.open(name)
 pix = im.load()
 arr = []
 stret = 1
-
+red, green, blue, alpha = im.split()
+print red
+print alpha
 
 print("Starting first pass...")
 for y in range(0, im.size[1]):
     for x in range(0, im.size[0]):
+        if y == 0 and x == 0:
+            print pix[x,y]
         arr.append(pix[x,y][0])
         arr.append(pix[x,y][1])
         arr.append(pix[x,y][2])
-
+        arr.append(pix[x,y][3])
 arr2 = array(arr)
 
 if(transform == "metallic"):
@@ -146,10 +148,11 @@ elif(transform == "pitch"):
     stret = 2
 i = 0
 print("Rewriting file...")
+print im.size
 for y in range(0, im.size[1]/stret):
-    for x in range(0, im.size[0]):
-        pix[x,y] = (arr[i], arr[i + 1], arr[i + 2])
-        i += 3
+    while i < im.size[0] - 3:
+        pix[x,y] = (arr[i], arr[i + 1], arr[i + 2], arr[i + 3])
+        i += 4
 
 if (transform == "speed"):
     for y in range((im.size[1]/stret), im.size[1]):
