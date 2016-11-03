@@ -20,7 +20,7 @@ var database = mongoose.connect(config.db || '', config.dbOptions || {}, functio
     console.error('Mongo error:' + err.message);
   }
 });
-var SongSchema = mongoose.model('Song', true); //use strict
+var SongSchema = mongoose.model('Song'); //use strict
 
 var app = express();
 var server = require('http').Server(app);
@@ -142,7 +142,7 @@ if (config.dev) {
     res.sendFile(path.join(__dirname, 'build/app.js'));
   });
 }
-app.get('/app/*', function(req, res) {
+app.get('/app(|/*)|', function(req, res) {
   res.sendFile(path.join(__dirname, 'build/index.html'));
 });
 
@@ -157,6 +157,9 @@ app.use('/inputs/images', express.static(__dirname+'/inputs/images'));
 app.use('/outputs/audio', express.static(__dirname+'/outputs/audio'));
 app.use('/outputs/images', express.static(__dirname+'/outputs/images'));
 
+app.get('/', function(req, res) {
+  res.redirect('/app/');
+});
 
 server.listen(port, host, function (err) {
   if (err) {
