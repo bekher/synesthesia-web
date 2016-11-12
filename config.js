@@ -11,6 +11,6 @@ module.exports = {
   mongoose: {
     debug: true
   },
-  dev: false
+  dev: true
 
 }

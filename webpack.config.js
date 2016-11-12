@@ -10,7 +10,7 @@ module.exports = {
   ],
   devtool: 'eval-source-map',
   output: {
-    path: __dirname,
+    path: __dirname + '/build',
     filename: 'app.js',
     publicPath: '/pub/'
   },
