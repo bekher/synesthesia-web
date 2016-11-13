@@ -49,14 +49,12 @@ var host = '0.0.0.0'
 
 app.set('view engine', 'html');
 
-
+/*
 app.get('/css/uikit.min.js', function (req,res) {
   res.sendFile(path.join(__dirname, 'build/css/uikit.min.css'));
 });
+*/
 
-var myRandom = function(l, h) {
-  return Math.floor(Math.random() * (h-l) + l);
-}
 app.post('/upload', function(req, res) {
   console.log('uploading...');
   //var mp3data = fs.readFileSync(__dirname+'/'+req.files[0].path);
@@ -99,11 +97,9 @@ app.post('/upload', function(req, res) {
                 }
               });
               console.log('redirecting....');
-              res.redirect('/app/#/view/'+filename);
             });
           }
         });
-        res.redirect('/app/#/view/'+filename);
     }
   });
 });
@@ -127,18 +123,16 @@ app.get('/transform/:id/:type', function(req, res) {
 
       });
     }
-  }
-  //child_process.
-                             );
-                             res.redirect('/app/#/view/'+req.params.id);
+  });
+  res.redirect('/app/#/view/'+req.params.id);
 });
 
 
 if (config.dev) {
   app.use(require('webpack-dev-middleware')(compiler, {
-    noInfo: true,
-    quiet: true,
-    lazy: true,
+    noInfo: false,
+    quiet: false,
+    lazy: false,
     watchOptions: {
       aggregateTimeout: 300,
       poll: true
@@ -151,25 +145,28 @@ if (config.dev) {
     res.sendFile(path.join(__dirname, 'build/app.js'));
   });
 }
-app.get('/app(|/*)|', function(req, res) {
-  res.sendFile(path.join(__dirname, 'build/index.html'));
-});
-
 app.use(function(err, req, res, next) {
   if (typeof err !== 'string'){
     console.log(err);
     res.error(500);
   }
 });
-app.use('/inputs/audio', express.static(__dirname+'/uploads'));
-app.use('/inputs/images', express.static(__dirname+'/inputs/images'));
-app.use('/outputs/audio', express.static(__dirname+'/outputs/audio'));
-app.use('/outputs/images', express.static(__dirname+'/outputs/images'));
+app.use('/inputs/audio', express.static(__dirname+'/uploads', {redirect: false}));
+app.use('/inputs/images', express.static(__dirname+'/inputs/images', {redirect: false}));
+app.use('/outputs/audio', express.static(__dirname+'/outputs/audio', {redirect: false}));
+app.use('/outputs/images', express.static(__dirname+'/outputs/images', {redirect: false}));
+app.use('/css', express.static(__dirname+'/build/css', {redirect: false}));
 
+app.get('/app(|/*)|', function(req, res) {
+  res.sendFile(path.join(__dirname, 'build/index.html'));
+});
+
+
+/*
 app.get('/', function(req, res) {
   res.redirect('/app/');
 });
-
+*/
 server.listen(port, host, function (err) {
   if (err) {
     return console.error(err);
