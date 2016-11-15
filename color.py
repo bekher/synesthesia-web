@@ -108,9 +108,6 @@ im = Image.open(name)
 pix = im.load()
 arr = []
 stret = 1
-red, green, blue, alpha = im.split()
-print red
-print alpha
 
 print("Starting first pass...")
 for y in range(0, im.size[1]):
@@ -120,7 +117,7 @@ for y in range(0, im.size[1]):
         arr.append(pix[x,y][0])
         arr.append(pix[x,y][1])
         arr.append(pix[x,y][2])
-        arr.append(pix[x,y][3])
+        #arr.append(pix[x,y][3])
 arr2 = array(arr)
 
 if(transform == "metallic"):
@@ -150,9 +147,9 @@ i = 0
 print("Rewriting file...")
 print im.size
 for y in range(0, im.size[1]/stret):
-    while i < im.size[0] - 3:
-        pix[x,y] = (arr[i], arr[i + 1], arr[i + 2], arr[i + 3])
-        i += 4
+    for x in range(0, im.size[0]):
+        pix[x,y] = (arr[i], arr[i + 1], arr[i + 2])
+        i += 3
 
 if (transform == "speed"):
     for y in range((im.size[1]/stret), im.size[1]):
