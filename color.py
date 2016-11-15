@@ -150,7 +150,7 @@ i = 0
 print("Rewriting file...")
 print im.size
 for y in range(0, im.size[1]/stret):
-    while i < im.size[0] - 3:
+    for x in range(0, im.size[0]):
         pix[x,y] = (arr[i], arr[i + 1], arr[i + 2], arr[i + 3])
         i += 4
 
