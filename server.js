@@ -40,10 +40,12 @@ ioroutes(io);
 app.socket = io;
 app.database = database
 
+// song uploads
+/*
 app.use(multer({
   dest: "./uploads"
 }).any());
-
+*/
 var port = config.http.port;
 var host = '0.0.0.0'
 
@@ -55,7 +57,7 @@ app.get('/css/uikit.min.js', function (req,res) {
 });
 */
 
-app.post('/upload', function(req, res) {
+app.post('/upload', multer({dest:"./uploads"}).any(), function(req, res) {
   console.log('uploading...');
   //var mp3data = fs.readFileSync(__dirname+'/'+req.files[0].path);
   //console.log(audioMetaData.mp3(mp3data));
@@ -86,7 +88,9 @@ app.post('/upload', function(req, res) {
                 artist: String(data.artist) || 'No artist',
                 album: String(data.album) || 'No album',
                 genre: String(ffData.metadata.genre) || 'Genre unknown',
-                completed: false,
+                completedTransform: false,
+                startedTransform: false,
+                imageMods: false,
                 filename: filename
               };
               new SongSchema(songobj).save(function(err, songitem) {
@@ -106,7 +110,7 @@ app.post('/upload', function(req, res) {
 
 app.get('/transform/:id/:type', function(req, res) {
   console.log('got '+req.params.id+' with '+req.params.type);
-  SongSchema.findOneAndUpdate({'filename': req.params.id}, {'completed': true, 'transform':req.params.type},{upsert:true}, function(err, item) {
+  SongSchema.findOneAndUpdate({'filename': req.params.id}, {'completedTransform': true, 'startedTransform': true, 'transform':req.params.type},{upsert:true}, function(err, item) {
     if (err) {
       console.log('Mongo error while updating '+err)
     } else {
@@ -120,13 +124,22 @@ app.get('/transform/:id/:type', function(req, res) {
         if (err) {
           console.log('error '+err);
         }
-
       });
     }
   });
   res.redirect('/app/#/view/'+req.params.id);
 });
 
+app.post('/transformImg/:id/', multer({dest:"imgUploads"}).any(), function(req, res) {
+  var imgPath = __dirname+'/'+req.files[0].path;
+  /* TODO:
+   * mv uploaded file path to given directory name
+   * set startedRetransform,
+   * launch dream.py, set output to 
+   * */
+
+
+});
 
 if (config.dev) {
   app.use(require('webpack-dev-middleware')(compiler, {
@@ -143,6 +156,9 @@ if (config.dev) {
   // send some webpack
   app.get('/pub/app.js', function(req, res) {
     res.sendFile(path.join(__dirname, 'build/app.js'));
+  });
+  app.get('/pub/caman.js', function(req,res) {
+    res.sendFile(path.join(__dirname, 'build/caman.js'));
   });
 }
 app.use(function(err, req, res, next) {

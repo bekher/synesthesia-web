@@ -1,13 +1,20 @@
 import { Link } from 'react-router';
 import React, { PropTypes } from 'react';
 
+import $ from 'jquery';
 let css = {
   progressBar: {
-    width: '0%'
+    width: '0%',
+    color: '#fff',
+  },
+  container: {
+    height: "500px",
+    position: "relative",
+    "margin-left": "35px",
+    width: "95%",
+    background: "gray",
   }
-};
-
-import $ from 'jquery';
+}
 
 export default class UploadPage extends React.Component {
 
@@ -21,13 +28,20 @@ export default class UploadPage extends React.Component {
       allow : '*.(mp3)', // allow only images
 
       loadstart: function() {
-        bar.css("width", "0%").text("0%");
+        bar.css("width", "0%").css("color", "#fff").text("0%");
         progressbar.removeClass("uk-hidden");
       },
 
       progress: function(percent) {
         percent = Math.ceil(percent);
-        bar.css("width", percent+"%").text(percent+"%");
+        bar.css("width", percent+"%").css("color", "#fff").text(percent+"%");
+        if (percent == 100) {
+          $("#uploadComplete").text("Upload complete, processing...");
+          setTimeout(function() {
+            window.location.replace("/#/browse/");
+
+          }, 2000);
+        }
       },
 
       allcomplete: function(response) {
@@ -36,31 +50,27 @@ export default class UploadPage extends React.Component {
 
         setTimeout(function(){
           progressbar.addClass("uk-hidden");
-          window.location.replace("/#/browse");
-        }, 2500);
+        }, 1000);
       }
     };
 
-    var select = UIkit.uploadSelect($("#upload-select"), settings);
+    //var select = UIkit.uploadSelect($("#upload-select"), settings);
     var drop   = UIkit.uploadDrop($("#upload-drop"), settings);
 
   }
 
   render() {
     return (
-      <div id="upload-drop" className="uk-grid" style={ {height: "1000 px"}}>
-        <div className="uk-width-1-1 uk-row-first">
-          <p> Upload mp3</p> 
-          <form className="uk-form">
-          <input type="text" />
+      <div id="upload-drop" className="uk-grid" >
+        <div className="uk-width-1-1 " style={css.container}>
           <p></p>
           <div className="uk-placeholder">
-            <h4>Drag an audio file here</h4><a className="uk-form-file"><br/><br/><input id="upload-select" type="file" /></a>
+            <h3>Drag an audio file here</h3>
           </div>
           <div id="progressbar" className="uk-progress uk-hidden">
             <div className="uk-progress-bar" style={css.progressBar}>...</div>
           </div>
-          </form>
+          <h2 id="uploadComplete"></h2>
         </div>
       </div>
     );

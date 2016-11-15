@@ -8,6 +8,7 @@ import Events from '../constants/SocketEvents'
 import Wavesurfer from 'react-wavesurfer'
 
 import Loading from './Loading'
+import Caman from './Caman'
 
 var css = {
   stickyplace: {
@@ -24,7 +25,7 @@ var css = {
     width: 'auto'
   },
   wave: {
-    width: '600px',
+    width: '800px',
   }
 
 };
@@ -48,11 +49,12 @@ export default class ViewOnPage extends React.Component {
     socket.on(Events.getOneSong, function(resp) {
       var song = resp.data || null;
 
+      console.log(song);
       _this.setState({
         song : song
       });
-      
     });
+
     this.playButtonPressed = this.playButtonPressed.bind(this);
 
   }
@@ -75,6 +77,7 @@ export default class ViewOnPage extends React.Component {
       });
 
       this.wavesurfer.load('/inputs/audio/'+song.filename);
+      console.log('/inputs/audio/'+song.filename);
     }
     if (this.state.playing != prevState.playing) {
       this.wavesurfer.playPause();
@@ -108,21 +111,9 @@ export default class ViewOnPage extends React.Component {
         <h3>{this.state.song.artist} | {this.state.song.album} | {this.state.song.length+" "} 
              | {this.state.song.format} </h3>
 
-
 				<div className="uk-grid">
 
-        { this.state.song.completed ?
-          <div>
-          <Loading />
-          <p>Output image:</p>
-          <img src={'/outputs/images/'+this.state.song.filename+'.png'} style = {css.image}/>
-          <p>Transformed audio (This may take a while):</p>
-          <p>Transform: {this.state.song.transform}</p>
-            <audio controls>
-          <source src={'/outputs/audio/'+this.state.song.filename + '.mp3'} type="audio/mpeg" />
-          You browser does not support audio...
-            </audio>
-            </div>
+        { this.state.song.completedTransform ? <span />
               :
                 <div className="uk-sticky-placeholder" style={css.stickyplace}>
                 <div className='uk-panel uk-panel-box uk-active' style={css.sidepanel} data-uk-sticky="top{:35}">
@@ -142,6 +133,7 @@ export default class ViewOnPage extends React.Component {
                 </ul>
                 </div>
                 </div>
+          }
         }
 
         <div className='uk-width-1-3'>
@@ -154,9 +146,30 @@ export default class ViewOnPage extends React.Component {
             <div className="progress-bar progress-bar-info"></div>
           </div>
         </div>
-          <a href='/app/#/browse'>Back to browse</a>
-        </div>
+        {
+          this.state.song.completedTransform ? 
+            <div>
+              <p>Output image:</p>
+              <img src={'/outputs/images/'+this.state.song.filename+'.png'} style = {css.image}/>
+              <p>Transformed audio (This may take a while):</p>
+              <p>Transform: {this.state.song.transform}</p>
+                <audio controls>
+              <source src={'/outputs/audio/'+this.state.song.filename + '.mp3'} type="audio/mpeg" />
+              You browser does not support audio...
+                </audio>
+              <Caman />
+            </div>
+              : 
+                this.state.song.startedTransform ?
+                  <Loading />
+                    :
+                  <p>Select a transform</p>
+                
+        }
+
+            </div>
           </div>
+        <a href='/app/#/browse'>Back to browse</a>
           </div>
             : <div>
             <h2> Song not found 😞</h2>

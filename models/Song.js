@@ -19,12 +19,15 @@ var SongSchema = Schema({
   format: String,
   artist: String,
   album: String,
-  completed: Boolean,
+  genre: String,
+  completedTransform: Boolean,
+  startedTransform: Boolean,
   filename: {
     type: String,
     index: true,
     unique: true
-  }
+  },
+  imageMods: Boolean
 
 });
 
