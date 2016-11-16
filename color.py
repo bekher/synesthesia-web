@@ -16,9 +16,16 @@ def reverse(arr):
     return array([arr[i:i+4] for i in range(0, len(arr), 4)])[::-1].flatten()
 
 def shuffle(arr):
-    arr = array([arr[i:i+3584] for i in range(0, len(arr), 3584)])
-
+    num = len(arr)/300000
+    newArr = []
+    for i in range(0,len(arr), num):
+        newArr.append(arr[i:i+num])
+        #arr = [arr[i:i+num] for i in range(0, len(arr), num)]
+    arr = array(arr)
+    print arr
     random.shuffle(arr)
+    print arr
+    print arr.flatten()
     return arr.flatten()
 
 def redshift(arr):
