@@ -148,8 +148,8 @@ print("Rewriting file...")
 print im.size
 for y in range(0, im.size[1]/stret):
     for x in range(0, im.size[0]):
-        pix[x,y] = (arr[i], arr[i + 1], arr[i + 2])
-        i += 3
+        pix[x,y] = (arr[i], arr[i + 1], arr[i + 2], arr[i + 3])
+        i += 4
 
 if (transform == "speed"):
     for y in range((im.size[1]/stret), im.size[1]):
