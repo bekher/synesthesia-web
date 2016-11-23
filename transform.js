@@ -4,6 +4,8 @@ var im = require("imagemagick");
 var fs = require("fs");
 var exec = require('child_process').exec;
 var ffmpeg = require('fluent-ffmpeg');
+ffmpeg.setFfmpegPath('/usr/local/bin/ffmpeg/ffmpeg');
+ffmpeg.setFfprobePath('/usr/local/bin/ffmpeg/ffprobe');
 
 /*
     A module export to provide two functions: taking a sound file, transforming it,
@@ -37,7 +39,9 @@ module.exports = {
                             rawToWav('outputs/audio/' + filename + '.raw',
                                'outputs/audio/' + filename + '.wav', function() {
                                 musToWav('outputs/audio/' + filename + '.wav',
-                                    'outputs/audio/' + filename + '.mp3', cb);       
+                                    'outputs/audio/' + filename + '.mp3', function() {
+                                       cb(filename);   
+                                    });
                             });         
                         });
                     });
@@ -52,7 +56,9 @@ module.exports = {
             rawToWav('outputs/audio/' + filename + '.raw',
                 'outputs/audio/' + filename + '.wav', function() {
                 musToWav('outputs/audio/' + filename + '.wav',
-                    'outputs/audio/' + filename + '.mp3', cb);       
+                    'outputs/audio/' + filename + '.mp3', function() {
+                      cb(filename);
+                    });       
             });         
         });
     },
@@ -62,7 +68,9 @@ module.exports = {
             wavToRaw('outputs/audio/' + filename + '.wav', 
                 'outputs/audio/' + filename + '.raw', function() {
                 rawToPng('outputs/audio/' + filename + '.raw', 
-                    'outputs/images/' + filename + '.png', cb);
+                    'outputs/images/' + filename + '.png', function() {
+                      cb(filename);
+                    });
             });
         });
     },
