@@ -75,7 +75,7 @@ module.exports = {
         });
     },
 
-    transformPartial: function(filename, cb) {
+    transformPartial: function(filename, transform, cb) {
         cmd = 'python color.py outputs/images/' + filename + '.png ' + transform
         exec(cmd, function(error, stdout, stderr) {
             pngToRaw('outputs/images/' + filename + '.png',

@@ -139,6 +139,7 @@ app.post('/upload', multer({dest:"./uploads"}).any(), function(req, res) {
                 genre: String(ffData.metadata.genre) || 'Genre unknown',
                 completedTransform: false,
                 startedTransform: false,
+                preprocessComplete: false,
                 imageMods: false,
                 filename: filename
               };
@@ -147,7 +148,7 @@ app.post('/upload', multer({dest:"./uploads"}).any(), function(req, res) {
                   console.log('Mongoose error while saving '+err);
                 } else {
                   console.log('Saved song! Beginning pre-processing');
-                  transform.getImg(songPath, preprocessCB);
+                  transform.getImg(filename, preprocessCB);
                 }
               });
               console.log('redirecting....');
@@ -178,7 +179,10 @@ app.get('/transform/:id/:type', function(req, res) {
           console.log('error '+err);
         }
       });*/
-       transform.transformPartial(req.params.id, transformCompleteCB);
+      
+        // copy file
+        fs.createReadStream('inputs/images/'+req.params.id+'.png').pipe(fs.createWriteStream('outputs/images/'+req.params.id+'.png'));
+        transform.transformPartial(req.params.id, req.params.type, transformCompleteCB);
       }
     }
   });

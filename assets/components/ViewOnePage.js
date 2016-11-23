@@ -20,12 +20,12 @@ var css = {
     width: '173px'
   },
   image: {
-    'max-width': '100%',
+    'max-width': '200%',
     height: 'auto',
     width: 'auto'
   },
   wave: {
-    width: '800px',
+    width: '220%',
   }
 
 };
@@ -34,6 +34,14 @@ export default class ViewOnPage extends React.Component {
 
   populate() {
     socket.emit(Events.getOneSong, this.props.params.id);
+    socket.on(this.props.params.id, function(resp) {
+
+      console.log("recv update for song");
+      _this.setState({
+        song: song,
+      });
+    });
+
   }
 
   constructor() {
@@ -62,10 +70,11 @@ export default class ViewOnPage extends React.Component {
       });
     });
 
+    
     //TODO: socket.on(Events.songUpdated(song.id), function(resp) {
 
-    this.inputPlayButtonPressed = this.inputPlayButtonPressed(this);
-    this.outputPlayButtonPressed = this.outputPlayButtonPressed(this);
+    this.inputPlayButtonPressed = this.inputPlayButtonPressed.bind(this);
+    this.outputPlayButtonPressed = this.outputPlayButtonPressed.bind(this);
 
   }
 
@@ -153,8 +162,7 @@ export default class ViewOnPage extends React.Component {
 
 				<div className="uk-grid">
 
-        { this.state.song.completedTransform ? <span />
-              :
+        { (! this.state.song.completedTransform) &&
                 <div className="uk-sticky-placeholder" style={css.stickyplace}>
                 <div className='uk-panel uk-panel-box uk-active' style={css.sidepanel} data-uk-sticky="top{:35}">
                 <ul className="uk-nav uk-side-nav">
@@ -187,6 +195,16 @@ export default class ViewOnPage extends React.Component {
           </div>
         </div>
         {
+          this.state.song.preprocessComplete &&
+            <div>
+              <br />
+              <p>Image pre-transformation: </p>
+              <a href={'/inputs/images/'+this.state.song.filename+'.png'}>
+                <img src={'/inputs/images/'+this.state.song.filename+'.png'} style = {css.image}/>
+              </a>
+            </div>
+        }
+        {
           this.state.song.completedTransform ? 
             <div>
               <p>Output image:</p>
@@ -210,7 +228,7 @@ export default class ViewOnPage extends React.Component {
                 this.state.song.startedTransform ?
                   <Loading />
                     :
-                  <p>Select a transform</p>
+                    <p> <i>Synestize an image by applying a transform </i></p>
                 
         }
 
