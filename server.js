@@ -13,6 +13,9 @@ var exec = require('child_process').exec;
 var multer = require('multer');
 var probe = require('node-ffprobe');
 
+// import the magic
+var transform = require('./transform');
+
 // mongo
 var mongoose = require('mongoose');
 mongoose.set('debug', config.mongoose && config.mongoose.debug);
@@ -56,7 +59,9 @@ app.get('/css/uikit.min.js', function (req,res) {
   res.sendFile(path.join(__dirname, 'build/css/uikit.min.css'));
 });
 */
+var preprocessCB = function() {
 
+}
 app.post('/upload', multer({dest:"./uploads"}).any(), function(req, res) {
   console.log('uploading...');
   //var mp3data = fs.readFileSync(__dirname+'/'+req.files[0].path);
@@ -97,7 +102,8 @@ app.post('/upload', multer({dest:"./uploads"}).any(), function(req, res) {
                 if (err) {
                   console.log('Mongoose error while saving '+err);
                 } else {
-                  console.log('Saved song!');
+                  console.log('Saved song! Beginning pre-processing');
+                  //transform.getImg(songPath, preprocessCB);
                 }
               });
               console.log('redirecting....');
