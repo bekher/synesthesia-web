@@ -22,6 +22,7 @@ var SongSchema = Schema({
   genre: String,
   completedTransform: Boolean,
   startedTransform: Boolean,
+  preprocessComplete: Boolean,
   filename: {
     type: String,
     index: true,
