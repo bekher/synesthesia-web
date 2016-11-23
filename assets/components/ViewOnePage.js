@@ -42,8 +42,14 @@ export default class ViewOnPage extends React.Component {
 
     this.state = {
       song : null,
-      playing: false,
-      playicon: "uk-icon-play"
+      playingInput: false,
+      playingInputIcon: "uk-icon-play",
+      playingOutput: false,
+      playingOutputIcon: "uk-icon-play",
+      inputSongURL: null,
+      inputImgURL: null,
+      outputSongURL: null,
+      outputImgURL: null
     };
 
     socket.on(Events.getOneSong, function(resp) {
@@ -51,11 +57,15 @@ export default class ViewOnPage extends React.Component {
 
       console.log(song);
       _this.setState({
-        song : song
+        song : song,
+        inputSongURL: '/inputs/audio/'+song.filename,
       });
     });
 
-    this.playButtonPressed = this.playButtonPressed.bind(this);
+    //TODO: socket.on(Events.songUpdated(song.id), function(resp) {
+
+    this.inputPlayButtonPressed = this.inputPlayButtonPressed(this);
+    this.outputPlayButtonPressed = this.outputPlayButtonPressed(this);
 
   }
 
@@ -63,8 +73,8 @@ export default class ViewOnPage extends React.Component {
     if (this.state.song != null && prevState.song == null) {
       var song = this.state.song;
 
-      this.wavesurfer = WaveSurfer.create({
-        container: '#wave',
+      this.inputWavesurfer = WaveSurfer.create({
+        container: '#waveInput',
         waveColor: 'violet',
         progressColor: '#93499B',
         //scrollParent: true,
@@ -76,17 +86,43 @@ export default class ViewOnPage extends React.Component {
         cursorColor: "#9B6880"
       });
 
-      this.wavesurfer.load('/inputs/audio/'+song.filename);
-      console.log('/inputs/audio/'+song.filename);
+      this.inputWavesurfer.load(this.state.inputSongURL);
+    } 
+    if (this.state.song != null && this.state.song.completedTransform &&
+       ! prevState.song.completedTransform) {
+       var song = this.state.song
+       this.outputWavesurfer = WaveSurfer.create({
+        container: '#waveOutput',
+        waveColor: 'violet',
+        progressColor: '#93499B',
+        //scrollParent: true,
+        fillParent: true,
+        //minPxPerSec: 1.5,
+        autoCenter: true,
+        barWidth: 1.5,
+        cursorWidth: 2,
+        cursorColor: "#9B6880"
+      });
+
+      this.outputWavesurfer.load(this.state.outputSongURL);
+
     }
-    if (this.state.playing != prevState.playing) {
-      this.wavesurfer.playPause();
-      if (this.state.playing) {
-        this.setState({playicon : "uk-icon-pause"});
+    if (this.state.playingInput != prevState.playingInput) {
+      this.inputWavesurfer.playPause();
+      if (this.state.playingInput) {
+        this.setState({playingInputIcon : "uk-icon-pause"});
       } else {
-        this.setState({playicon : "uk-icon-play"});
+        this.setState({playingInputIcon : "uk-icon-play"});
       }
-}
+    } 
+    if (this.state.playingOutput != prevState.playingOutput) {
+      this.outputWavesurfer.playPause();
+      if (this.state.playingOutput) {
+         this.setState({playingOutputIcon : "uk-icon-pause"});
+      } else {
+         this.setState({playingOutputIcon : "uk-icon-play"});
+      }
+    }
   }
 
   componentDidMount() {
@@ -98,8 +134,12 @@ export default class ViewOnPage extends React.Component {
     //ViewStore.unlisten(this._onchange);
   }
 
-  playButtonPressed() {
-    this.setState({playing: !this.state.playing});
+  inputPlayButtonPressed() {
+    this.setState({playingInput: !this.state.playingInput});
+  }
+
+  outputPlayButtonPressed() {
+    this.setState({playingOutput: !this.state.playingOutput});
   }
 
   render() {
@@ -139,9 +179,9 @@ export default class ViewOnPage extends React.Component {
         <div className='uk-width-1-3'>
         <br />
         <h2>Original </h2>
-        <div id="wave" style={css.wave}>
-        <button onClick={this.playButtonPressed} className="button button--sacnite button--round-l button--inverted">
-          <i className={"button__icon "+this.state.playicon}></i><span>Play</span></button>
+        <div id="waveInput" style={css.wave}>
+          <button onClick={this.inputPlayButtonPressed} className="button button--sacnite button--round-l button--inverted">
+            <i className={"button__icon "+this.state.playingInputIcon}></i><span>Play</span></button>
           <div className="progress progress-striped active" id="progress-bar">
             <div className="progress-bar progress-bar-info"></div>
           </div>
@@ -153,7 +193,14 @@ export default class ViewOnPage extends React.Component {
               <img src={'/outputs/images/'+this.state.song.filename+'.png'} style = {css.image}/>
               <p>Transformed audio (This may take a while):</p>
               <p>Transform: {this.state.song.transform}</p>
-                <audio controls>
+               <div id="waveOutput" style={css.wave}>
+                <button onClick={this.outputPlayButtonPressed} className="button button--sacnite button--round-l button--inverted">
+                  <i className={"button__icon "+this.state.playingOutputIcon}></i><span>Play</span></button>
+                <div className="progress progress-striped active" id="progress-bar">
+                <div className="progress-bar progress-bar-info"></div>
+          </div>
+        </div>
+ <audio controls>
               <source src={'/outputs/audio/'+this.state.song.filename + '.mp3'} type="audio/mpeg" />
               You browser does not support audio...
                 </audio>
