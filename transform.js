@@ -65,6 +65,20 @@ module.exports = {
                     'outputs/images/' + filename + '.png', cb);
             });
         });
+    },
+
+    transformPartial: function(filename, cb) {
+        cmd = 'python color.py outputs/images/' + filename + '.png ' + transform
+        exec(cmd, function(error, stdout, stderr) {
+            pngToRaw('outputs/images/' + filename + '.png',
+                'outputs/audio/' + filename + '.raw', function() {
+                rawToWav('outputs/audio/' + filename + '.raw',
+                   'outputs/audio/' + filename + '.wav', function() {
+                    musToWav('outputs/audio/' + filename + '.wav',
+                        'outputs/audio/' + filename + '.mp3', cb);       
+                });         
+            });
+        });
     }
 }
 
@@ -167,7 +181,7 @@ function wavToRaw(src, dest, callback) {
 }
 
 function pngToRaw(src, dest, callback) {
-    console.log("[*] Converting back to raw...")
+    console.log("Converting back to raw...")
         var size = Math.floor(fs.statSync(src)["size"] / 3)
         f = factors(size);
     var x = f[f.length/2];
