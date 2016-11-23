@@ -18,9 +18,12 @@ def reverse(arr):
     return array(a).flatten()
 
 def shuffle(arr):
+    num = 8192
     arr = [arr[i:i+num] for i in range(0, len(arr), num)]
+    if len(arr[len(arr) - 1]) != len(arr[len(arr) - 2]):
+        arr[len(arr) - 1] = arr[len(arr) - 2]
     random.shuffle(arr)
-    return arr.flatten()
+    return array(arr).flatten()
 
 def redshift(arr):
     i = 0
@@ -132,7 +135,6 @@ if(transform == "greenshift"):
     arr = greenshift(arr2)
 elif(transform == "reverse"):
     arr = reverse(arr2)
-    print arr
 elif(transform == "shuffle"):
     arr = shuffle(arr2)
 elif(transform == "decay"):
