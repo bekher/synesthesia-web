@@ -1,13 +1,95 @@
 import React from 'react';
 
-export default class Caman extends React.Component {
+let css = {
+    img : { 
+      maxWidth: "200%",
+      width: "auto",
+      height: "auto"
+    },
+  };
+
+export default class CamanFrame extends React.Component {
+
+  
+  constructor() {
+    super();
+
+    this.state = {
+      imgPath: '',
+      //imgPath: this.props.params.imgPath,
+    }
+  }
+
+    componentDidMount() {
+    console.log( this.props.imgPath);
+    this.state = {
+      imgPath: this.props.imgPath,
+    }
+		var busy, caman, changed, filters, presetBusy, presetCaman, render, renderPreset,
+			__hasProp = {}.hasOwnProperty;
+
+		caman = null;
+
+		presetCaman = null;
+
+		filters = {};
+
+		busy = false;
+
+		changed = false;
+
+		caman = Caman('#example');
+
+		render = _.throttle(function() {
+			var filter, value;
+			if (busy) {
+				changed = true;
+				return;
+			} else {
+				changed = false;
+			}
+			busy = true;
+			caman.revert(false);
+			for (filter in filters) {
+				if (!__hasProp.call(filters, filter)) continue;
+				value = filters[filter];
+				value = parseFloat(value, 10);
+				if (value === 0) {
+					continue;
+				}
+				caman[filter](value);
+			}
+			return caman.render(function() {
+				busy = false;
+				if (changed) {
+					return render();
+				}
+			});
+		}, 300);
+
+    $('.FilserSetting input').each(function() {
+      var filter;
+      filter = $(this).data('filter');
+      return filters[filter] = $(this).val();
+    });
+	$('#Filters').on('change', '.FilterSetting input', function() {
+    console.log('here');
+      var filter, value;
+      filter = $(this).data('filter');
+      value = $(this).val();
+      filters[filter] = value;
+      $(this).find('~ .FilterValue').html(value);
+      return render();
+    });
+  }
+
   render() {
     return (
 <div>
   <img
     id="example" 
-    src="/images/example1_600.jpg"
-    data-caman-hidpi="/images/example1_1200.jpg"
+    src={this.props.imgPath}
+    style={css.img}
     /
   >
 

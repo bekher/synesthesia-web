@@ -193,9 +193,12 @@ function wavToRaw(src, dest, callback) {
 function pngToRaw(src, dest, callback) {
     console.log("Converting back to raw...")
         var size = Math.floor(fs.statSync(src)["size"] / 3)
-        f = factors(size);
+       /* f = factors(size);
+
     var x = f[f.length/2];
-    var y = size/x;
+    var y = size/x;*/
+        var x = Math.floor(Math.sqrt(size));
+        var y = x;
     console.log("Size: "+size+": ("+x+","+y+")")
         im.convert(["-size", x+"x"+y, "-depth", "8", src, "rgb:"+dest], function(err, stdout) {
             if (err) throw err;
@@ -206,9 +209,11 @@ function pngToRaw(src, dest, callback) {
 }
 function rawToPng(src, dest, callback) {
     var size = Math.floor(fs.statSync(src)["size"] / 3)
-        f = factors(size);
+        /*f = factors(size);
     var x = f[f.length/2];
-    var y = size/x;
+    var y = size/x;*/
+      var x = Math.floor(Math.sqrt(size));
+      var y = x;
     console.log("Size: "+size+": ("+x+","+y+")")
         im.convert(["-size", x+"x"+y, "-depth", "8", "rgb:"+src, dest], function(err, stdout) {
             if (err) throw err;

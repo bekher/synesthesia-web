@@ -8,7 +8,7 @@ import Events from '../constants/SocketEvents'
 import Wavesurfer from 'react-wavesurfer'
 
 import Loading from './Loading'
-import Caman from './Caman'
+//import CamanFrame from './CamanFrame'
 
 var css = {
   stickyplace: {
@@ -34,13 +34,7 @@ export default class ViewOnPage extends React.Component {
 
   populate() {
     socket.emit(Events.getOneSong, this.props.params.id);
-    socket.on(this.props.params.id, function(resp) {
-      console.log("recv update for song");
-      this.setState({
-        song: song,
-      });
-    });
-
+    
   }
 
   constructor() {
@@ -137,6 +131,12 @@ export default class ViewOnPage extends React.Component {
 
   componentDidMount() {
     //ViewStore.listen(_this.onChange);
+    socket.on(this.props.params.id, function(resp) {
+      console.log("recv update for song");
+      this.setState({
+        song: this.state.song,
+      });
+    });
 
     this.populate();
   }
@@ -222,7 +222,6 @@ export default class ViewOnPage extends React.Component {
               <a href={'/outputs/images/'+this.state.song.filename+'.png'}>
                 <img src={'/outputs/images/'+this.state.song.filename+'.png'} style = {css.image}/>
               </a>
-              <Caman />
             </div>
               : 
                 this.state.song.startedTransform ?
