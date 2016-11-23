@@ -12,42 +12,40 @@ def metallic(arr):
     return arr
 
 def reverse(arr):
-    return array([arr[i:i+4] for i in range(0, len(arr), 4)])[::-1].flatten()
+    a = [arr[i:i+4] for i in range(0, len(arr), 4)][::-1]
+    if len(a[0]) != len(a[1]):
+        a[0] = a[1]
+    return array(a).flatten()
 
 def shuffle(arr):
-    num = len(arr)/300000
-    newArr = []
-    for i in range(0,len(arr), num):
-        newArr.append(arr[i:i+num])
-        #arr = [arr[i:i+num] for i in range(0, len(arr), num)]
-    arr = array(arr)
-    #print arr
+    arr = [arr[i:i+num] for i in range(0, len(arr), num)]
     random.shuffle(arr)
-    #print arr
-    #print arr.flatten()
     return arr.flatten()
 
 def redshift(arr):
     i = 0
     while i < len(arr):
         arr[i] = 255
-        i += 4
+        arr[i + 3] = 255
+        i += 12
     return arr
 
 def greenshift(arr):
     i = 0
     print "Array length: %d" % len(arr)
     while i < len(arr):
-        arr[i + 1] = min(arr[i + 1] + 15, 255)
-        i += 4
+        arr[i + 1] = 255
+        arr[i + 4] = 255
+        i += 12
     return arr
 
 def blueshift(arr):
     i = 0
     print "Blueshifting..."
     while i < len(arr):
-        arr[i + 2] = 255
-        i += 4
+        arr[i + 8] = 255
+        arr[i + 5] = 255
+        i += 12
     return arr
 
 def decay(arr, jmp=32):
@@ -118,12 +116,10 @@ stret = 1
 print("Starting first pass...")
 for y in range(0, im.size[1]):
     for x in range(0, im.size[0]):
-        if y == 0 and x == 0:
-            print pix[x,y]
         arr.append(pix[x,y][0])
         arr.append(pix[x,y][1])
         arr.append(pix[x,y][2])
-        #arr.append(pix[x,y][3])
+
 arr2 = array(arr)
 
 if(transform == "metallic"):
@@ -136,6 +132,7 @@ if(transform == "greenshift"):
     arr = greenshift(arr2)
 elif(transform == "reverse"):
     arr = reverse(arr2)
+    print arr
 elif(transform == "shuffle"):
     arr = shuffle(arr2)
 elif(transform == "decay"):
@@ -154,8 +151,8 @@ print("Rewriting file...")
 print im.size
 for y in range(0, im.size[1]/stret):
     for x in range(0, im.size[0]):
-        pix[x,y] = (arr[i], arr[i + 1], arr[i + 2], arr[i + 3])
-        i += 4
+        pix[x,y] = (arr[i], arr[i + 1], arr[i + 2])
+        i += 3
 
 if (transform == "speed"):
     for y in range((im.size[1]/stret), im.size[1]):
