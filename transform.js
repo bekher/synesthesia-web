@@ -64,11 +64,11 @@ module.exports = {
     },
 
     getImg: function(filename, cb) {
-        musToWav('uploads/' + filename, 'outputs/audio/' + filename + '.wav', function() {
-            wavToRaw('outputs/audio/' + filename + '.wav', 
-                'outputs/audio/' + filename + '.raw', function() {
-                rawToPng('outputs/audio/' + filename + '.raw', 
-                    'outputs/images/' + filename + '.png', function() {
+        musToWav('uploads/' + filename, 'inputs/audio/' + filename + '.wav', function() {
+            wavToRaw('inputs/audio/' + filename + '.wav', 
+                'inputs/audio/' + filename + '.raw', function() {
+                rawToPng('inputs/audio/' + filename + '.raw', 
+                    'inputs/images/' + filename + '.png', function() {
                       cb(filename);
                     });
             });
@@ -83,7 +83,9 @@ module.exports = {
                 rawToWav('outputs/audio/' + filename + '.raw',
                    'outputs/audio/' + filename + '.wav', function() {
                     musToWav('outputs/audio/' + filename + '.wav',
-                        'outputs/audio/' + filename + '.mp3', cb);       
+                        'outputs/audio/' + filename + '.mp3', function() {
+                           cb(filename);   
+                        });
                 });         
             });
         });
