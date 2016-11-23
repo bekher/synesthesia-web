@@ -37,9 +37,7 @@ module.exports = {
                             rawToWav('outputs/audio/' + filename + '.raw',
                                'outputs/audio/' + filename + '.wav', function() {
                                 musToWav('outputs/audio/' + filename + '.wav',
-                                    'outputs/audio/' + filename + '.mp3', function() {
-                                    cb();     
-                                });       
+                                    'outputs/audio/' + filename + '.mp3', cb);       
                             });         
                         });
                     });
@@ -54,10 +52,18 @@ module.exports = {
             rawToWav('outputs/audio/' + filename + '.raw',
                 'outputs/audio/' + filename + '.wav', function() {
                 musToWav('outputs/audio/' + filename + '.wav',
-                    'outputs/audio/' + filename + '.mp3', function() {
-                    cb();     
-                });       
+                    'outputs/audio/' + filename + '.mp3', cb);       
             });         
+        });
+    },
+
+    getImg: function(filename, cb) {
+        musToWav('uploads/' + filename, 'outputs/audio/' + filename + '.wav', function() {
+            wavToRaw('outputs/audio/' + filename + '.wav', 
+                'outputs/audio/' + filename + '.raw', function() {
+                rawToPng('outputs/audio/' + filename + '.raw', 
+                    'outputs/images/' + filename + '.png', cb);
+            });
         });
     }
 }
