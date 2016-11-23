@@ -19,7 +19,6 @@ export default class BrowsePage extends React.Component {
     };
 
     socket.on(Events.getAllSongs, function(resp) {
-      console.log('data'+resp.data);
       var songs = resp.data || [];
 
       _this.setState({
@@ -55,12 +54,24 @@ export default class BrowsePage extends React.Component {
             </thead>
             <tbody>
             {this.state.songs.map(function(song) {
+              var date = new Date(song.created);
+              console.log(date);
+              console.log(date.getYear() + 1900);
+              var hours = date.getHours();
+              var minutes = date.getMinutes();
+              var ampm = hours >= 12 ? 'pm' : 'am';
+              hours = hours % 12;
+              hours = hours ? hours : 12; // the hour '0' should be '12'
+              minutes = minutes < 10 ? '0'+minutes : minutes;
+              var strTime = hours + ':' + minutes + ' ' + ampm;
+              var dateFmt =  date.getDate() + '/' + date.getMonth() + '/' + (date.getYear() + 1900) +
+                ' ' + strTime;
               return <tr key={song._id}>
                   <td>{song.transform}</td>
                   <td><a href={'/app/#/view/'+song.filename}>{song.title}</a></td>
                   <td>{song.artist}</td>
                   <td>{song.length}</td>
-                  <td>{song.created}</td>
+                  <td>{dateFmt}</td>
                   <td>{song.format}</td>
                 </tr>
             }) }

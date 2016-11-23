@@ -20,7 +20,7 @@ var css = {
     width: '173px'
   },
   image: {
-    'max-width': '200%',
+    'maxWidth': '200%',
     height: 'auto',
     width: 'auto'
   },
@@ -35,9 +35,8 @@ export default class ViewOnPage extends React.Component {
   populate() {
     socket.emit(Events.getOneSong, this.props.params.id);
     socket.on(this.props.params.id, function(resp) {
-
       console.log("recv update for song");
-      _this.setState({
+      this.setState({
         song: song,
       });
     });
@@ -67,6 +66,7 @@ export default class ViewOnPage extends React.Component {
       _this.setState({
         song : song,
         inputSongURL: '/inputs/audio/'+song.filename,
+        outputSongURL: '/outputs/audio/'+song.filename+'.mp3',//'/outputs/audio/'+song.filename,
       });
     });
 
@@ -75,6 +75,7 @@ export default class ViewOnPage extends React.Component {
 
     this.inputPlayButtonPressed = this.inputPlayButtonPressed.bind(this);
     this.outputPlayButtonPressed = this.outputPlayButtonPressed.bind(this);
+    this.populate = this.populate.bind(this);
 
   }
 
@@ -98,11 +99,11 @@ export default class ViewOnPage extends React.Component {
       this.inputWavesurfer.load(this.state.inputSongURL);
     } 
     if (this.state.song != null && this.state.song.completedTransform &&
-       ! prevState.song.completedTransform) {
+       (! prevState.song || !prevState.song.completedTransform)) {
        var song = this.state.song
        this.outputWavesurfer = WaveSurfer.create({
         container: '#waveOutput',
-        waveColor: 'violet',
+        waveColor: '#4f66ff',
         progressColor: '#93499B',
         //scrollParent: true,
         fillParent: true,
@@ -207,26 +208,29 @@ export default class ViewOnPage extends React.Component {
         {
           this.state.song.completedTransform ? 
             <div>
-              <p>Output image:</p>
-              <img src={'/outputs/images/'+this.state.song.filename+'.png'} style = {css.image}/>
-              <p>Transformed audio (This may take a while):</p>
-              <p>Transform: {this.state.song.transform}</p>
+              <br />
+              <h2> Synestized Output </h2>
+              <h3>Transform: {this.state.song.transform}</h3>
                <div id="waveOutput" style={css.wave}>
                 <button onClick={this.outputPlayButtonPressed} className="button button--sacnite button--round-l button--inverted">
                   <i className={"button__icon "+this.state.playingOutputIcon}></i><span>Play</span></button>
                 <div className="progress progress-striped active" id="progress-bar">
-                <div className="progress-bar progress-bar-info"></div>
-          </div>
-        </div>
- <audio controls>
-              <source src={'/outputs/audio/'+this.state.song.filename + '.mp3'} type="audio/mpeg" />
-              You browser does not support audio...
-                </audio>
+                  <div className="progress-bar progress-bar-info"></div>
+                </div>
+               </div>
+              <p> Image post-transformation </p>
+              <a href={'/outputs/images/'+this.state.song.filename+'.png'}>
+                <img src={'/outputs/images/'+this.state.song.filename+'.png'} style = {css.image}/>
+              </a>
               <Caman />
             </div>
               : 
                 this.state.song.startedTransform ?
-                  <Loading />
+                  <div>
+                    <br />
+                    <p> Synestizing your image, this may take a while </p>
+                    <Loading />
+                  </div>
                     :
                     <p> <i>Synestize an image by applying a transform </i></p>
                 
