@@ -59,7 +59,51 @@ app.get('/css/uikit.min.js', function (req,res) {
   res.sendFile(path.join(__dirname, 'build/css/uikit.min.css'));
 });
 */
-var preprocessCB = function() {
+var preprocessCB = function(filename) {
+  //spl = filename.split("/");
+  //relpath = spl[spl.length-1];
+   SongSchema.findOneAndUpdate({'filename': filename}, {'preprocessComplete': true},{upsert:true}, function(err, item) {
+    if (err) {
+      console.log('Mongo error while updating '+err)
+    } else {
+      console.log('updated item');
+      console.log(item);
+      io.sockets.emit(filename, {
+        error: err,
+        data: item  
+      });
+    }
+  });
+};
+
+var transformCompleteCB = function(filename) {
+    SongSchema.findOneAndUpdate({'filename': filename}, {'completedTransform': true},{upsert:true}, function(err, item) {
+    if (err) {
+      console.log('Mongo error while updating '+err)
+    } else {
+      console.log('updated item');
+      console.log(item);
+      io.sockets.emit(filename, {
+        error: err,
+        data: item  
+      });
+    }
+  });
+};
+
+var imageTransformCompleteCB = function(filename) {
+    SongSchema.findOneAndUpdate({'filename': filename}, {'imageMods': true}, {upsert:true}, function(err, item) {
+    if (err) {
+      console.log('Mongo error while updating '+err)
+    } else {
+      console.log('updated item');
+      console.log(item);
+      io.sockets.emit(filename, {
+        error: err,
+        data: item  
+      });
+    }
+  });
 
 }
 app.post('/upload', multer({dest:"./uploads"}).any(), function(req, res) {
@@ -103,7 +147,7 @@ app.post('/upload', multer({dest:"./uploads"}).any(), function(req, res) {
                   console.log('Mongoose error while saving '+err);
                 } else {
                   console.log('Saved song! Beginning pre-processing');
-                  //transform.getImg(songPath, preprocessCB);
+                  transform.getImg(songPath, preprocessCB);
                 }
               });
               console.log('redirecting....');
@@ -116,21 +160,26 @@ app.post('/upload', multer({dest:"./uploads"}).any(), function(req, res) {
 
 app.get('/transform/:id/:type', function(req, res) {
   console.log('got '+req.params.id+' with '+req.params.type);
-  SongSchema.findOneAndUpdate({'filename': req.params.id}, {'completedTransform': true, 'startedTransform': true, 'transform':req.params.type},{upsert:true}, function(err, item) {
+  SongSchema.findOneAndUpdate({'filename': req.params.id}, { 'startedTransform': true, 'transform':req.params.type},{upsert:true}, function(err, item) {
     if (err) {
       console.log('Mongo error while updating '+err)
     } else {
       console.log('updated item');
       console.log(item);
-      var target = 'python '+__dirname+'/dream.py '+ __dirname+'/uploads/'+req.params.id+' '+req.params.type
-      console.log('executing: '+target);
-      exec(target, function(err, stdout, stderr) {
+      if (!item.preprocessComplete) {
+        console.log('Preprocess not complete yet');
+      } else {
+      //var target = 'python '+__dirname+'/dream.py '+ __dirname+'/uploads/'+req.params.id+' '+req.params.type
+      //console.log('executing: '+target);
+      /*exec(target, function(err, stdout, stderr) {
         console.log('stdout: ${stdout}');
         console.log('stderr: ${stderr}');
         if (err) {
           console.log('error '+err);
         }
-      });
+      });*/
+       transform.transformPartial(req.params.id, transformCompleteCB);
+      }
     }
   });
   res.redirect('/app/#/view/'+req.params.id);
@@ -143,8 +192,7 @@ app.post('/transformImg/:id/', multer({dest:"imgUploads"}).any(), function(req, 
    * set startedRetransform,
    * launch dream.py, set output to 
    * */
-
-
+  console.log(imgPath);
 });
 
 if (config.dev) {
