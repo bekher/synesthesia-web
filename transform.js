@@ -4,8 +4,8 @@ var im = require("imagemagick");
 var fs = require("fs");
 var exec = require('child_process').exec;
 var ffmpeg = require('fluent-ffmpeg');
-ffmpeg.setFfmpegPath('/usr/local/bin/ffmpeg/ffmpeg');
-ffmpeg.setFfprobePath('/usr/local/bin/ffmpeg/ffprobe');
+ffmpeg.setFfmpegPath('/opt/local/bin/ffmpeg');
+ffmpeg.setFfprobePath('/opt/local/bin/ffmpeg');
 
 /*
     A module export to provide two functions: taking a sound file, transforming it,
@@ -30,10 +30,13 @@ module.exports = {
         musToWav('uploads/' + filename, 'outputs/audio/' + filename + '.wav', function() {
             wavToRaw('outputs/audio/' + filename + '.wav', 
                 'outputs/audio/' + filename + '.raw', function() {
+                    console.log('done');
                 rawToPng('outputs/audio/' + filename + '.raw', 
                     'outputs/images/' + filename + '.png', function() {
                     cmd = 'python color.py outputs/images/' + filename + '.png ' + transform
                     exec(cmd, function(error, stdout, stderr) {
+                        console.log(stdout);
+                        console.log(stderr);
                         pngToRaw('outputs/images/' + filename + '.png',
                             'outputs/audio/' + filename + '.raw', function() {
                             rawToWav('outputs/audio/' + filename + '.raw',
@@ -89,11 +92,29 @@ module.exports = {
                 });         
             });
         });
-    }
+    },
+
+    factor: factors
 }
 
 function factors(n) {
-    var num_factors = [], i;
+    ret = [];
+
+    for (i = Math.floor(Math.sqrt(n)); i > 0; i--) {
+        if (n % i === 0) {
+            ret.push(i);
+            ret.push(n / i);
+            break;
+        }
+    }
+
+    if (Math.abs(ret[0] - ret[1]) > 1000) {
+        return factors(n - 1);
+    }
+
+    return ret;
+
+    /*var num_factors = [], i;
     for (i = 1; i <= Math.floor(Math.sqrt(n)); i += 1) {
         if (n % i === 0) {
             num_factors.push(i);
@@ -101,7 +122,7 @@ function factors(n) {
         }
     }
     num_factors.sort(function(x, y){return x - y;});  // numeric sort
-    return num_factors;
+    return num_factors;*/
 }
 
 function musToWav(src, dest, callback) {
@@ -193,12 +214,14 @@ function wavToRaw(src, dest, callback) {
 function pngToRaw(src, dest, callback) {
     console.log("Converting back to raw...")
         var size = Math.floor(fs.statSync(src)["size"] / 3)
-       /* f = factors(size);
+    var f = factors(size);
 
-    var x = f[f.length/2];
-    var y = size/x;*/
-        var x = Math.floor(Math.sqrt(size));
-        var y = x;
+    //var x = f[f.length/2];
+    //var y = size/x;
+        //var x = Math.floor(Math.sqrt(size));
+        //var y = x;
+    var x = f[0];
+    var y = f[1];
     console.log("Size: "+size+": ("+x+","+y+")")
         im.convert(["-size", x+"x"+y, "-depth", "8", src, "rgb:"+dest], function(err, stdout) {
             if (err) throw err;
@@ -208,12 +231,15 @@ function pngToRaw(src, dest, callback) {
     console.log("all done");
 }
 function rawToPng(src, dest, callback) {
+    console.log('converting from raw to png');
     var size = Math.floor(fs.statSync(src)["size"] / 3)
-        /*f = factors(size);
-    var x = f[f.length/2];
-    var y = size/x;*/
-      var x = Math.floor(Math.sqrt(size));
-      var y = x;
+    var f = factors(size);
+    //var x = f[f.length/2];
+    //var y = size/x;
+      //var x = Math.floor(Math.sqrt(size));
+      //var y = x;
+    var x = f[0];
+    var y = f[1];
     console.log("Size: "+size+": ("+x+","+y+")")
         im.convert(["-size", x+"x"+y, "-depth", "8", "rgb:"+src, dest], function(err, stdout) {
             if (err) throw err;
