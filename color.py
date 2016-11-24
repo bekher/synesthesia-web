@@ -27,7 +27,7 @@ def shuffle(arr):
 
 def redshift(arr):
     i = 0
-    while i < len(arr):
+    while i < len(arr) - 5:
         arr[i] = 255
         arr[i + 3] = 255
         i += 12
@@ -36,7 +36,7 @@ def redshift(arr):
 def greenshift(arr):
     i = 0
     print "Array length: %d" % len(arr)
-    while i < len(arr):
+    while i < len(arr) - 6:
         arr[i + 1] = 255
         arr[i + 4] = 255
         i += 12
@@ -45,7 +45,7 @@ def greenshift(arr):
 def blueshift(arr):
     i = 0
     print "Blueshifting..."
-    while i < len(arr):
+    while i < len(arr) - 9:
         arr[i + 8] = 255
         arr[i + 5] = 255
         i += 12

@@ -16,7 +16,7 @@ module.exports = (function(io) {
       });
     });
     _io.on('getAllSongs', function() {
-      Song.find({}).exec(function(err, songs) {
+      Song.find({}).sort([['created', -1]]).exec(function(err, songs) {
         _io.emit('getAllSongs', {
           error: err,
           data: songs

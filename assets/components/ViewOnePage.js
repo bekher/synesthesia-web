@@ -132,9 +132,10 @@ export default class ViewOnPage extends React.Component {
   componentDidMount() {
     //ViewStore.listen(_this.onChange);
     socket.on(this.props.params.id, function(resp) {
+      var song = resp.data || null;
       console.log("recv update for song");
       this.setState({
-        song: this.state.song,
+        song: song,
       });
     });
 

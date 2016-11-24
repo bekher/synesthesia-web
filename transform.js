@@ -4,8 +4,8 @@ var im = require("imagemagick");
 var fs = require("fs");
 var exec = require('child_process').exec;
 var ffmpeg = require('fluent-ffmpeg');
-ffmpeg.setFfmpegPath('/opt/local/bin/ffmpeg');
-ffmpeg.setFfprobePath('/opt/local/bin/ffmpeg');
+ffmpeg.setFfmpegPath('/usr/local/bin/ffmpeg/ffmpeg');
+ffmpeg.setFfprobePath('/usr/local/bin/ffmpeg/ffprobe');
 
 /*
     A module export to provide two functions: taking a sound file, transforming it,
