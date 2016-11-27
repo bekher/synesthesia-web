@@ -234,6 +234,7 @@ app.post('/transformImg/:id/', multer({dest:"imgUploads", maxCount: 1}).any(), f
    * launch dream.py, set output to 
    * */
   console.log(imgPath);
+  fs.createReadStream(imgPath).pipe(fs.createWriteStream('outputs/images/'+req.params.id+'.png'));
 });
 
 if (config.dev) {

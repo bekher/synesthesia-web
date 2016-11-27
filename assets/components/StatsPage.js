@@ -35,9 +35,18 @@ export default class StatsPage extends React.Component {
     //ViewStore.unlisten(this._onchange);
   }
 
+  componentDidUpdate() {
+    console.log("DID UPDATE");
+  }
+
+  componentWillUpdate() {
+    console.log("WILL UPDATE");
+  }
+
   render() {
     return (
       <div className="uk-grid">
+      <script src="test.js"></script>
         <div className="uk-width-1-1 uk-row-first">
           <h2> Statistics </h2>
             {this.state.songs.map(function(song) {

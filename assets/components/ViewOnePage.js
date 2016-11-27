@@ -233,9 +233,12 @@ export default class ViewOnPage extends React.Component {
                 </div>
                </div>
               <p> Image post-transformation </p>
-              <a href={'/outputs/images/'+this.state.song.filename+'.png'}>
+              {
+              /*<a href={'/outputs/images/'+this.state.song.filename+'.png'}>
                 <img src={'/outputs/images/'+this.state.song.filename+'.png'} style = {css.image}/>
               </a>
+              */
+              }
               <CamanFrame imgPath={'/outputs/images/'+this.state.song.filename+'.png'} />
             </div>
               : 

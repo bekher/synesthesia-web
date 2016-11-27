@@ -1,11 +1,11 @@
 import React from 'react';
 
 let css = {
-    img : { 
-      width: "100px",
-      height: "100px"
-    },
-  };
+  img : {
+    width: "auto",
+    height: "auto"
+  }
+};
 
 export default class CamanFrame extends React.Component {
 
@@ -19,115 +19,21 @@ export default class CamanFrame extends React.Component {
         brightness: 0,
       }
     }
-    this.startCaman = this.startCaman.bind(this);
     this.sliderChanged = this.sliderChanged.bind(this);
     this.sliderChanging = this.sliderChanging.bind(this);
-    this.renderCaman = this.renderCaman.bind(this);
-    this.caman = null;
+    this.transformFinished = this.transformFinished.bind(this);
+
+    socket.on(Events.camanTransform, this.transformFinished);
   }
 
   componentDidMount() {
-    this.startCaman();
+    socket.emit(Events.camanTransform, this.state.filters);
   }
 
   /* not actually needed unless path changes, could be used to update from server in future */
   componentDidUpdate(prevProps, prevState) {
     if (! prevState.imgPath && this.state.imgPath) {
-      this.startCaman();
     }
-  }
-
-  startCaman() {
-		var busy, changed, filters, presetBusy, presetCaman, render, renderPreset,
-			__hasProp = {}.hasOwnProperty;
-    
-    this.setState ({
-      imgPath: this.props.imgPath,
-    });
-
-
-		filters = {};
-
-		busy = false;
-
-		changed = false;
-
-		this.caman = Caman('#example', function() {
-      this.resize({
-        width: 100,
-        height: 100
-      });
-    });
-
-    /*
-		render = _.throttle(function() {
-			var filter, value;
-			if (busy) {
-				changed = true;
-				return;
-			} else {
-				changed = false;
-			}
-			busy = true;
-			caman.revert(false);
-			for (filter in filters) {
-        console.log(filter);
-				if (!__hasProp.call(filters, filter)) continue;
-				value = filters[filter];
-				value = parseFloat(value, 10);
-				if (value === 0) {
-					continue;
-				}
-				caman[filter](value);
-			}
-			return caman.render(function() {
-				busy = false;
-				if (changed) {
-					return render();
-				}
-			});
-		}, 300);
-
-    $('.FilserSetting input').each(function() {
-      var filter;
-      filter = $(this).data('filter');
-      return filters[filter] = $(this).val();
-    });
-	$('#Filters').on('change', '.FilterSetting input', function() {
-    console.log('here');
-      var filter, value;
-      filter = $(this).data('filter');
-      value = $(this).val();
-      filters[filter] = value;
-      $(this).find('~ .FilterValue').html(value);
-      return render();
-    });
-  */
-  }
-
-  renderCaman() {
-    this.camanBusy = false;
-    var _this = this;
-    var _render = () => {
-      if (! _this.camanBusy && _this.caman) {
-        console.log('start render');
-        let filters = _this.state.filters;
-        _this.camanBusy = true;
-        for (var filter in filters) {
-          console.log(filter);
-          if (filters.hasOwnProperty(filter)) {
-            let val = filters[filter];
-            console.log(parseFloat(val));
-            _this.caman[filter](val);
-          }
-        }
-        return _this.caman.render(function() {
-          console.log("finished rendering");
-          _this.camanBusy = false; 
-        });
-      }
-    };
-    return _render();
   }
 
   sliderChanged(sliderName) {
@@ -166,7 +72,7 @@ export default class CamanFrame extends React.Component {
           data-camanwidth="100"
           data-camanheight="100"
           /
-        >
+       
 
   <div id="Filters">
     <div className="Filter">
