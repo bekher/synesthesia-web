@@ -1,11 +1,10 @@
 // React
 import React from 'react';
-import { Link } from 'react-router';
 
 // constants
 import Events from '../constants/SocketEvents'
 
-export default class BrowsePage extends React.Component {
+export default class StatsPage extends React.Component {
   populate() {
     socket.emit(Events.getAllSongs);
   }
@@ -40,23 +39,9 @@ export default class BrowsePage extends React.Component {
     return (
       <div className="uk-grid">
         <div className="uk-width-1-1 uk-row-first">
-          <h2> Browse creations </h2>
-          <table className="uk-table">
-            <caption>All audio creations</caption>
-            <thead>
-              <tr>
-                <th>Transform</th>
-                <th>Title</th>
-                <th>Artist</th>
-                <th>Length</th>
-                <th>Date</th>
-                <th>Format</th>
-              </tr>
-            </thead>
-            <tbody>
+          <h2> Statistics </h2>
             {this.state.songs.map(function(song) {
               var date = new Date(song.created);
-              console.log(song);
               var hours = date.getHours();
               var minutes = date.getMinutes();
               var ampm = hours >= 12 ? 'pm' : 'am';
@@ -66,6 +51,7 @@ export default class BrowsePage extends React.Component {
               var strTime = hours + ':' + minutes + ' ' + ampm;
               var dateFmt =  date.getDate() + '/' + date.getMonth() + '/' + (date.getYear() + 1900) +
                 ' ' + strTime;
+              /*
               return <tr key={song._id}>
                   <td>{song.transform}</td>
                   <td><a href={'/app/#/view/'+song.filename}>{song.title}</a></td>
@@ -74,9 +60,9 @@ export default class BrowsePage extends React.Component {
                   <td>{dateFmt}</td>
                   <td>{song.format}</td>
                 </tr>
+                */
+              return <p>{song._id}</p>
             }) }
-            </tbody>
-          </table>
         </div>
       </div>
       );

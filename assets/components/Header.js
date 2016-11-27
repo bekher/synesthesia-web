@@ -6,14 +6,14 @@ var css = {
     background: "#7A6CBB"
   },
   a: {
-    "font-size": "16px",
+    fontSize: "16px",
     color: "#fff",
-    "text-shadow": "none",
+    textShadow: "none",
   },
   brand: {
-    "font-size": "22px",
+    fontSize: "22px",
     color: "#fff",
-    "text-shadow": "none",
+    textShadow: "none",
   }
 }
 export default class Header extends React.Component {
@@ -27,11 +27,11 @@ export default class Header extends React.Component {
           <li className="">
             <a className="" style={css.a} href="/app/#/"> Home </a>
           </li>
-          <li className="">
-            <a className="" href="/app/#/upload/" style={css.a}>Upload</a>
-          </li>
           <li>
             <a className="" href="/app/#/browse" style={css.a}>Browse</a>
+          </li>
+          <li className="">
+            <a className="" href="/app/#/stats/" style={css.a}>Stats</a>
           </li>
         </ul>
         <div className="uk-navbar-flip">

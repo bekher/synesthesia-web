@@ -10,7 +10,7 @@ let css = {
   container: {
     height: "500px",
     position: "relative",
-    "margin-left": "35px",
+    marginLeft: "35px",
     width: "95%",
     background: "gray",
   }

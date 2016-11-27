@@ -5,7 +5,6 @@ var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
 
 var async = require('async');
-var _ = require('lodash');
 
 var SongSchema = Schema({
   title: {
@@ -28,7 +27,9 @@ var SongSchema = Schema({
     index: true,
     unique: true
   },
-  imageMods: Boolean
+  imageMods: Boolean,
+  hasAlbumArt: Boolean,
+  albumArtPath: String
 
 });
 

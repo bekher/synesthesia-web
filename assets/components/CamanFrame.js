@@ -16,11 +16,10 @@ export default class CamanFrame extends React.Component {
 
     this.state = {
       imgPath: '',
-      //imgPath: this.props.params.imgPath,
     }
   }
 
-    componentDidMount() {
+  componentDidMount() {
     console.log( this.props.imgPath);
     this.state = {
       imgPath: this.props.imgPath,
@@ -39,6 +38,7 @@ export default class CamanFrame extends React.Component {
 		changed = false;
 
 		caman = Caman('#example');
+    console.log(caman);
 
 		render = _.throttle(function() {
 			var filter, value;

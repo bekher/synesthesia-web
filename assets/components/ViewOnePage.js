@@ -8,7 +8,7 @@ import Events from '../constants/SocketEvents'
 import Wavesurfer from 'react-wavesurfer'
 
 import Loading from './Loading'
-//import CamanFrame from './CamanFrame'
+import CamanFrame from './CamanFrame'
 
 var css = {
   stickyplace: {
@@ -53,24 +53,11 @@ export default class ViewOnPage extends React.Component {
       outputImgURL: null
     };
 
-    socket.on(Events.getOneSong, function(resp) {
-      var song = resp.data || null;
-
-      console.log(song);
-      _this.setState({
-        song : song,
-        inputSongURL: '/inputs/audio/'+song.filename,
-        outputSongURL: '/outputs/audio/'+song.filename+'.mp3',//'/outputs/audio/'+song.filename,
-      });
-    });
-
-    
-    //TODO: socket.on(Events.songUpdated(song.id), function(resp) {
-
     this.inputPlayButtonPressed = this.inputPlayButtonPressed.bind(this);
     this.outputPlayButtonPressed = this.outputPlayButtonPressed.bind(this);
     this.populate = this.populate.bind(this);
-
+    this.songUpdateBroadcast = this.songUpdateBroadcast.bind(this);
+    this.curSongUpdated = this.curSongUpdated.bind(this);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -129,20 +116,41 @@ export default class ViewOnPage extends React.Component {
     }
   }
 
-  componentDidMount() {
-    //ViewStore.listen(_this.onChange);
-    socket.on(this.props.params.id, function(resp) {
-      var song = resp.data || null;
-      console.log("recv update for song");
-      this.setState({
-        song: song,
-      });
+  songUpdateBroadcast(resp) {
+    var song = resp.data || null;
+    console.log("recv update for song");
+    console.log(song);
+    this.setState({
+      song: song,
     });
+  }
+
+  curSongUpdated(resp) {
+    var song = resp.data || null;
+    this.setState({
+      song : song,
+      inputSongURL: '/inputs/audio/'+song.filename,
+      outputSongURL: '/outputs/audio/'+song.filename+'.mp3',//'/outputs/audio/'+song.filename,
+    });
+
+  }
+
+  componentDidMount() {
+    socket.on(this.props.params.id, this.songUpdateBroadcast);
+    socket.on(Events.getOneSong, this.curSongUpdated);
 
     this.populate();
   }
+
   componentWillUnmount() {
-    //ViewStore.unlisten(this._onchange);
+    socket.removeListener(this.props.params.id, this.songUpdateBroadcast);
+    socket.removeListener(Events.getOneSong, this.curSongUpdated);
+    this.setState({playingInput: false});
+    this.setState({playingOutput: false});
+    if (this.inputWavesurfer) 
+      this.inputWavesurfer.destroy();
+    if (this.outputWavesurfer)
+      this.outputWavesurfer.destroy();
   }
 
   inputPlayButtonPressed() {
@@ -158,7 +166,12 @@ export default class ViewOnPage extends React.Component {
       <div>
       { this.state.song ? 
         <div>
-        <h1>{this.state.song.title}</h1>
+         <div>
+          { this.state.song.hasAlbumArt &&
+            <img src={this.state.song.albumArtPath} style = {css.image}/>
+          }
+          <h1>{this.state.song.title}</h1>
+        </div>
         <h3>{this.state.song.artist} | {this.state.song.album} | {this.state.song.length+" "} 
              | {this.state.song.format} </h3>
 
@@ -223,6 +236,7 @@ export default class ViewOnPage extends React.Component {
               <a href={'/outputs/images/'+this.state.song.filename+'.png'}>
                 <img src={'/outputs/images/'+this.state.song.filename+'.png'} style = {css.image}/>
               </a>
+              <CamanFrame imgPath={'/outputs/images/'+this.state.song.filename+'.png'} />
             </div>
               : 
                 this.state.song.startedTransform ?
