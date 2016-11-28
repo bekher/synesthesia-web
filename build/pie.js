@@ -25,11 +25,11 @@ var transformPie = function (songs, id) {
 		.append("g")
 
 	svg.append("g")
-		.attr("class", "slices");
+		.attr("class", id + "-slices");
 	svg.append("g")
-		.attr("class", "labels");
+		.attr("class", id + "-labels");
 	svg.append("g")
-		.attr("class", "lines");
+		.attr("class", id + "-lines");
 
 	var width = 960,
 	    height = 450,
@@ -65,18 +65,16 @@ var transformPie = function (songs, id) {
 		});
 	}
 
-	change(data);
-
-	function change(data) {
+	var change = function(data) {
 
 		/* ------- PIE SLICES -------*/
-		var slice = svg.select(".slices").selectAll("path.slice")
+		var slice = svg.select("." + id + "-slices").selectAll("path.slice")
 			.data(pie(data), key);
 
 		slice.enter()
 			.insert("path")
 			.style("fill", function(d) { return color(d.data.label); })
-			.attr("class", "slice");
+			.attr("class", id + "-slice");
 
 		slice		
 			.transition().duration(1000)
@@ -94,7 +92,7 @@ var transformPie = function (songs, id) {
 
 		/* ------- TEXT LABELS -------*/
 
-		var text = svg.select(".labels").selectAll("text")
+		var text = svg.select("." + id +  "-labels").selectAll("text")
 			.data(pie(data), key);
 
 		text.enter()
@@ -135,7 +133,7 @@ var transformPie = function (songs, id) {
 
 		/* ------- SLICE TO TEXT POLYLINES -------*/
 
-		var polyline = svg.select(".lines").selectAll("polyline")
+		var polyline = svg.select("." + id + "-lines").selectAll("polyline")
 			.data(pie(data), key);
 		
 		polyline.enter()
@@ -157,4 +155,8 @@ var transformPie = function (songs, id) {
 		polyline.exit()
 			.remove();
 	};
+
+    change(data);
+
+    return change;
 }
