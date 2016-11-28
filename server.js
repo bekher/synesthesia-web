@@ -253,8 +253,8 @@ if (config.dev) {
   app.get('/pub/app.js', function(req, res) {
     res.sendFile(path.join(__dirname, 'build/app.js'));
   });
-  app.get('/pub/caman.js', function(req,res) {
-    res.sendFile(path.join(__dirname, 'build/caman.js'));
+  app.get('/pub/pie.js', function(req,res) {
+    res.sendFile(path.join(__dirname, 'build/pie.js'));
   });
 }
 app.use(function(err, req, res, next) {
