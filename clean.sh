@@ -7,7 +7,7 @@ rm -rf inputs/images/*
 
 rm -rf uploads/*
 rm -rf albumArt/*
-rm -rf imageUploads/*
+rm -rf imgUploads/*
 
 echo "dropping bobby tables"
 

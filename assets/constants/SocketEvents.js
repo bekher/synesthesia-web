@@ -1,4 +1,6 @@
 module.exports = {
   getAllSongs: 'getAllSongs',
-  getOneSong: 'getOneSong'
+  getOneSong: 'getOneSong',
+  camanTransform: 'camanTransform',
+  camanToAudio: 'camanToAudio'
 };

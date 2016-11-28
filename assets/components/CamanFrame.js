@@ -2,8 +2,8 @@ import React from 'react';
 
 let css = {
     img : { 
-      width: "100px",
-      height: "100px"
+      width: "auto",
+      height: "auto"
     },
   };
 

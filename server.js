@@ -108,17 +108,27 @@ var imageTransformCompleteCB = function(filename) {
 
 }
 
-var fileFilter = function(req, file, cb) {
+var fileFilterMP3 = function(req, file, cb) {
   var type = file.mimetype;
   console.log(type);
-  if (type == 'audio/mpeg') {
+  if (type === 'audio/mpeg') {
     cb(null, true); 
   } else {
     cb(null, false);
   }
 }
 
-app.post('/upload', multer({dest:"./uploads", fileFilter: fileFilter}).any(), function(req, res) {
+var fileFilterImg = function(req, file, cb) {
+  var type = file.mimetype;
+  console.log(type);
+  if (type.split('/')[0] === 'image') {
+    cb(null, true); 
+  } else {
+    cb(null, false);
+  }
+}
+
+app.post('/upload', multer({dest:"./uploads", fileFilter: fileFilterMP3}).any(), function(req, res) {
   console.log('uploading...');
   if (req.files.length <= 0) {
     console.log('error in uploading, no files selected');
@@ -198,7 +208,7 @@ app.post('/upload', multer({dest:"./uploads", fileFilter: fileFilter}).any(), fu
 
 app.get('/transform/:id/:type', function(req, res) {
   console.log('got '+req.params.id+' with '+req.params.type);
-  SongSchema.findOneAndUpdate({'filename': req.params.id}, { 'startedTransform': true, 'transform':req.params.type},{upsert:true}, function(err, item) {
+  SongSchema.findOneAndUpdate({'filename': req.params.id, fileFilter: fileFilterImg}, { 'startedTransform': true, 'transform':req.params.type},{upsert:true}, function(err, item) {
     if (err) {
       console.log('Mongo error while updating '+err)
     } else {
@@ -218,8 +228,15 @@ app.get('/transform/:id/:type', function(req, res) {
       });*/
       
         // copy file
-        fs.createReadStream('inputs/images/'+req.params.id+'.png').pipe(fs.createWriteStream('outputs/images/'+req.params.id+'.png'));
-        transform.transformPartial(req.params.id, req.params.type, transformCompleteCB);
+        fs.createReadStream('inputs/images/'+req.params.id+'.png').pipe(fs.createWriteStream('outputs/images/'+req.params.id+'.png')).on('finish', function() {
+        if (req.params.type === "passthrough") {
+          console.log('recv passthrough');
+          // pass through
+          transform.pic(req.params.id, transformCompleteCB);
+        } else {
+          transform.transformPartial(req.params.id, req.params.type, transformCompleteCB);
+        }
+        });
       }
     }
   });
@@ -228,13 +245,9 @@ app.get('/transform/:id/:type', function(req, res) {
 
 app.post('/transformImg/:id/', multer({dest:"imgUploads", maxCount: 1}).any(), function(req, res) {
   var imgPath = __dirname+'/'+req.files[0].path;
-  /* TODO:
-   * mv uploaded file path to given directory name
-   * set startedRetransform,
-   * launch dream.py, set output to 
-   * */
-  console.log(imgPath);
-  fs.createReadStream(imgPath).pipe(fs.createWriteStream('outputs/images/'+req.params.id+'.png'));
+  console.log('recv overlay req ' + imgPath);
+  //fs.createReadStream(imgPath).pipe(fs.createWriteStream('outputs/images/'+req.params.id+'.png'));
+  transform.overlay(imgPath, req.params.id, imageTransformCompleteCB);
 });
 
 if (config.dev) {

@@ -1,38 +1,84 @@
 import React from 'react';
 
+// constants
+import Events from '../constants/SocketEvents'
+
 let css = {
   img : {
-    width: "auto",
-    height: "auto"
+    maxWidth: '150%',
+    width: 'auto',
+    height: 'auto'
   }
 };
 
-export default class CamanFrame extends React.Component {
+export default class CamanSliders extends React.Component {
 
   
+  makeInitialFilterState() {
+    return {
+         brightness: 0,
+        contrast: 0,
+        saturation: 0,
+        vibrance: 0,
+        exposure: 0,
+        hue: 0,
+        sepia: 0,
+        gamma: 0,
+        noise: 0,
+        clip: 0,
+        sharpen: 0
+    }
+
+  }
+
   constructor() {
     super();
 
     this.state = {
       imgPath: '',
-      filters: {
-        brightness: 0,
-      }
+      id: '',
+      filters: this.makeInitialFilterState(),
+      waitingForFeedback: false,
+      recvdFeedback: false,
     }
     this.sliderChanged = this.sliderChanged.bind(this);
     this.sliderChanging = this.sliderChanging.bind(this);
     this.transformFinished = this.transformFinished.bind(this);
+    this.updateAudioButtonPressed = this.updateAudioButtonPressed.bind(this);
+  }
 
-    socket.on(Events.camanTransform, this.transformFinished);
+  componentWillUnmount() {
+    socket.removeListener(Events.camanTransform, this.transformFinished);
+    socket.removeListener(props.imgId, this.imgRefresh);
   }
 
   componentDidMount() {
-    socket.emit(Events.camanTransform, this.state.filters);
+    socket.on(Events.camanTransform, this.transformFinished);
+    socket.on(this.props.imgId, this.imgRefresh);
+  }
+
+  componentWillReceiveProps(nextProps) {
   }
 
   /* not actually needed unless path changes, could be used to update from server in future */
   componentDidUpdate(prevProps, prevState) {
+ 
     if (! prevState.imgPath && this.state.imgPath) {
+
+    }
+
+  }
+
+  imgRefresh() {
+      // reload img
+      // cachebreaking is genius
+    $("#outputImg").attr("src", ""+$("#outputImg").attr("src")+"?" + new Date().getTime());
+  }
+
+  transformFinished(resp) {
+    if (! resp.error) {
+        this.setState({waitingForFeedback : false, recvdFeedback: true, filters: this.makeInitialFilterState() });
+      this.imgRefresh();
     }
   }
 
@@ -40,20 +86,24 @@ export default class CamanFrame extends React.Component {
     // thunking hard
    return (e) => {
       
-      // TODO: call caman render
-      console.log("slider val changed " + this.state.brightness);
-      this.renderCaman();
-    }
+      if (! this.state.waitingForFeedback) {
+        socket.emit(Events.camanTransform, {
+          id: this.props.imgId,
+          filters: this.state.filters
+        });
+        console.log("Emmitting stuff " + this.props.imgId)
+      }
+      this.setState({waitingForFeedback: true});
+
+      }
   }
+
   sliderChanging(sliderName) {
     return (e) => {
+      console.log(sliderName + ' ' + e.target.value);
       var newFilters = _.extend({}, this.state.filters);
 
-      switch (sliderName) {
-        case "brightness":
-          newFilters.brightness = e.target.value
-          break;
-      }
+      newFilters[sliderName] = e.target.value
       this.setState({
         filters: newFilters
       })
@@ -61,19 +111,34 @@ export default class CamanFrame extends React.Component {
     }
   }
 
+  updateAudioButtonPressed() {
+    socket.emit(Events.camanToAudio, {
+      id: this.props.imgId,
+    });
+  }
+
   render() {
 
     return (
       <div>
         <img
-          id="example" 
+          id="outputImg" 
           src={this.props.imgPath}
           style={css.img}
           data-camanwidth="100"
           data-camanheight="100"
-          /
+        / >
        
-
+        {
+          this.state.recvdFeedback &&
+            <p>You transform is now visible! 
+              <br />Done transforming the image? 
+              <br />
+              <a href="JavaScript:void(0)" onClick={this.updateAudioButtonPressed}>
+                Click here to transform the audio
+              </a>
+            </p>
+        }
   <div id="Filters">
     <div className="Filter">
       <div className="FilterName">
@@ -83,8 +148,8 @@ export default class CamanFrame extends React.Component {
       <div className="FilterSetting">
         <input
           type="range" 
-          min="-100"
-          max="100"
+          min="-50"
+          max="50"
           step="1"
           value={this.state.filters.brightness}
           onChange={this.sliderChanging('brightness')}
@@ -103,13 +168,15 @@ export default class CamanFrame extends React.Component {
       <div className="FilterSetting">
         <input
           type="range" 
-          min="-100"
-          max="100"
+          min="-50"
+          max="50"
           step="1"
-          value="0"
+          value={this.state.filters.contrast}
+          onChange={this.sliderChanging('contrast')}
+          onMouseUp={this.sliderChanged('contrast')}
           data-filter="contrast" /
         >
-        <span className="FilterValue">0</span>
+        <span className="FilterValue">{this.state.filters.contrast}</span>
       </div>
     </div>
   
@@ -124,10 +191,12 @@ export default class CamanFrame extends React.Component {
           min="-100"
           max="100"
           step="1"
-          value="0"
+          value={this.state.filters.saturation}
+          onChange={this.sliderChanging('saturation')}
+          onMouseUp={this.sliderChanged('saturation')}
           data-filter="saturation" /
          >
-        <span className="FilterValue">0</span>
+        <span className="FilterValue">{this.state.filters.saturation}</span>
       </div>
     </div>
   
@@ -142,10 +211,12 @@ export default class CamanFrame extends React.Component {
           min="-100"
           max="100"
           step="1"
-          value="0"
+          value={this.state.filters.vibrance}
+          onChange={this.sliderChanging('vibrance')}
+          onMouseUp={this.sliderChanged('vibrance')}
           data-filter="vibrance" /
         >
-        <span className="FilterValue">0</span>
+        <span className="FilterValue">{this.state.filters.vibrance}</span>
       </div>
     </div>
   
@@ -161,9 +232,12 @@ export default class CamanFrame extends React.Component {
           max="100"
           step="1"
           value="0"
+          value={this.state.filters.exposure}
+          onChange={this.sliderChanging('exposure')}
+          onMouseUp={this.sliderChanged('exposure')}
           data-filter="exposure" /
         >
-        <span className="FilterValue">0</span>
+        <span className="FilterValue">{this.state.filters.exposure}</span>
       </div>
     </div>
   
@@ -178,10 +252,12 @@ export default class CamanFrame extends React.Component {
           min="0"
           max="100"
           step="1"
-          value="0"
+          value={this.state.filters.hue}
+          onChange={this.sliderChanging('hue')}
+          onMouseUp={this.sliderChanged('hue')}
           data-filter="hue" /
         >
-        <span className="FilterValue">0</span>
+        <span className="FilterValue">{this.state.filters.hue}</span>
       </div>
     </div>
   
@@ -196,10 +272,12 @@ export default class CamanFrame extends React.Component {
           min="0"
           max="100"
           step="1"
-          value="0"
+          value={this.state.filters.sepia}
+          onChange={this.sliderChanging('sepia')}
+          onMouseUp={this.sliderChanged('sepia')}
           data-filter="sepia" /
         >
-        <span className="FilterValue">0</span>
+        <span className="FilterValue">{this.state.filters.sepia}</span>
       </div>
     </div>
   
@@ -214,10 +292,12 @@ export default class CamanFrame extends React.Component {
           min="0"
           max="10"
           step="0.1"
-          value="0"
+          value={this.state.filters.gamma}
+          onChange={this.sliderChanging('gamma')}
+          onMouseUp={this.sliderChanged('gamma')}
           data-filter="gamma" /
         >
-        <span className="FilterValue">0</span>
+        <span className="FilterValue">{this.state.filters.gamma}</span>
       </div>
     </div>
   
@@ -232,10 +312,12 @@ export default class CamanFrame extends React.Component {
           min="0"
           max="100"
           step="1"
-          value="0"
+          value={this.state.filters.noise}
+          onChange={this.sliderChanging('noise')}
+          onMouseUp={this.sliderChanged('noise')}
           data-filter="noise" /
         >
-        <span className="FilterValue">0</span>
+        <span className="FilterValue">{this.state.filters.noise}</span>
       </div>
     </div>
   
@@ -250,10 +332,12 @@ export default class CamanFrame extends React.Component {
           min="0"
           max="100"
           step="1"
-          value="0"
+          value={this.state.filters.clip}
+          onChange={this.sliderChanging('clip')}
+          onMouseUp={this.sliderChanged('clip')}
           data-filter="clip" /
         >
-        <span className="FilterValue">0</span>
+        <span className="FilterValue">{this.state.filters.clip}</span>
       </div>
     </div>
   
@@ -268,28 +352,12 @@ export default class CamanFrame extends React.Component {
           min="0"
           max="100"
           step="1"
-          value="0"
+          value={this.state.filters.sharpen}
+          onChange={this.sliderChanging('sharpen')}
+          onMouseUp={this.sliderChanged('sharpen')}
           data-filter="sharpen" /
         >
-        <span className="FilterValue">0</span>
-      </div>
-    </div>
-  
-    <div className="Filter">
-      <div className="FilterName">
-        <p>stackBlur</p>
-      </div>
-
-      <div className="FilterSetting">
-        <input
-          type="range" 
-          min="0"
-          max="20"
-          step="1"
-          value="0"
-          data-filter="stackBlur" /
-        >
-        <span className="FilterValue">0</span>
+        <span className="FilterValue">{this.state.filters.sharpen}</span>
       </div>
     </div>
   

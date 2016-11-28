@@ -110,8 +110,8 @@ def pitchshift(snd_array, n, window_size=2**13, h=2**11):
     return speedx(stretched[window_size:], factor)
 
 def overlay(song_image, other_pic):
-    print os.system("convert %s -resize %dx%d\\! bigger_%s" % (other_pic, song_image.size[0], song_image.size[1], other_pic))
-    pic = Image.open("bigger_"+other_pic)
+    print os.system("convert %s -resize %dx%d\\! %s_bigger" % (other_pic, song_image.size[0], song_image.size[1], other_pic))
+    pic = Image.open(other_pic+"_bigger")
     pix = pic.load()
     song_pix = song_image.load()
     a2 = []

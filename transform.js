@@ -94,6 +94,23 @@ module.exports = {
         });
     },
 
+  overlay: function(uploadedImg, filename, cb) {
+        cmd = 'python color.py outputs/images/' + filename + '.png overlay ' + uploadedImg
+        exec(cmd, function(error, stdout, stderr) {
+            pngToRaw('outputs/images/' + filename + '.png',
+                'outputs/audio/' + filename + '.raw', function() {
+                rawToWav('outputs/audio/' + filename + '.raw',
+                   'outputs/audio/' + filename + '.wav', function() {
+                    musToWav('outputs/audio/' + filename + '.wav',
+                        'outputs/audio/' + filename + '.mp3', function() {
+                           cb(filename);   
+                        });
+                });         
+            });
+        });
+ 
+  },
+
     factor: factors
 }
 
@@ -224,7 +241,10 @@ function pngToRaw(src, dest, callback) {
     var y = f[1];
     console.log("Size: "+size+": ("+x+","+y+")")
         im.convert(["-size", x+"x"+y, "-depth", "8", src, "rgb:"+dest], function(err, stdout) {
-            if (err) throw err;
+            if (err) { 
+              console.log('png to raw err');
+              console.log(err);
+            }
             if (callback) { callback(); }
             console.log('stdout:', stdout);
         });
@@ -242,7 +262,10 @@ function rawToPng(src, dest, callback) {
     var y = f[1];
     console.log("Size: "+size+": ("+x+","+y+")")
         im.convert(["-size", x+"x"+y, "-depth", "8", "rgb:"+src, dest], function(err, stdout) {
-            if (err) throw err;
+            if (err) {
+              console.log('raw to png err');
+              console.log(err);
+            }
             if (callback) { callback(); }
             console.log('stdout:', stdout);
         });

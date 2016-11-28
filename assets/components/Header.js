@@ -30,9 +30,12 @@ export default class Header extends React.Component {
           <li>
             <a className="" href="/app/#/browse" style={css.a}>Browse</a>
           </li>
+          {/*
           <li className="">
             <a className="" href="/app/#/stats/" style={css.a}>Stats</a>
           </li>
+          */
+          }
         </ul>
         <div className="uk-navbar-flip">
           <ul className="uk-navbar-nav">

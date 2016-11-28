@@ -5,10 +5,11 @@ import React from 'react';
 import Events from '../constants/SocketEvents'
 
 // deps
-import Wavesurfer from 'react-wavesurfer'
+//import Wavesurfer from 'react-wavesurfer'
 
 import Loading from './Loading'
-import CamanFrame from './CamanFrame'
+import CamanSliders from './CamanSliders'
+import OverlayUpload from './OverlayUpload'
 
 var css = {
   stickyplace: {
@@ -20,12 +21,25 @@ var css = {
     width: '173px'
   },
   image: {
-    'maxWidth': '200%',
+    'maxWidth': '150%',
     height: 'auto',
-    width: 'auto'
+    width: 'auto',
+  },
+  inline: {
+    display: 'inline-block',
+    position: 'absolute',
+  },
+  title: {
+    paddingTop: '15px'
+  },
+  albumArt: {
+    paddingRight: '20px',
+    maxWidth: '150px',
+    height: 'auto'
   },
   wave: {
-    width: '220%',
+    //width: '220%',
+    width: '150%'
   }
 
 };
@@ -34,7 +48,6 @@ export default class ViewOnPage extends React.Component {
 
   populate() {
     socket.emit(Events.getOneSong, this.props.params.id);
-    
   }
 
   constructor() {
@@ -58,8 +71,24 @@ export default class ViewOnPage extends React.Component {
     this.populate = this.populate.bind(this);
     this.songUpdateBroadcast = this.songUpdateBroadcast.bind(this);
     this.curSongUpdated = this.curSongUpdated.bind(this);
+    this.outputAudioUpdated = this.outputAudioUpdated.bind(this);
   }
 
+  makeOutputWavesurfer() {
+     return  WaveSurfer.create({
+        container: '#waveOutput',
+        waveColor: '#4f66ff',
+        progressColor: '#93499B',
+        //scrollParent: true,
+        fillParent: true,
+        //minPxPerSec: 1.5,
+        autoCenter: true,
+        barWidth: 1.5,
+        cursorWidth: 2,
+        cursorColor: "#9B6880"
+      });
+
+  }
   componentDidUpdate(prevProps, prevState) {
     if (this.state.song != null && prevState.song == null) {
       var song = this.state.song;
@@ -82,20 +111,8 @@ export default class ViewOnPage extends React.Component {
     if (this.state.song != null && this.state.song.completedTransform &&
        (! prevState.song || !prevState.song.completedTransform)) {
        var song = this.state.song
-       this.outputWavesurfer = WaveSurfer.create({
-        container: '#waveOutput',
-        waveColor: '#4f66ff',
-        progressColor: '#93499B',
-        //scrollParent: true,
-        fillParent: true,
-        //minPxPerSec: 1.5,
-        autoCenter: true,
-        barWidth: 1.5,
-        cursorWidth: 2,
-        cursorColor: "#9B6880"
-      });
-
-      this.outputWavesurfer.load(this.state.outputSongURL);
+       this.outputWavesurfer = this.makeOutputWavesurfer();
+       this.outputWavesurfer.load(this.state.outputSongURL);
 
     }
     if (this.state.playingInput != prevState.playingInput) {
@@ -132,12 +149,23 @@ export default class ViewOnPage extends React.Component {
       inputSongURL: '/inputs/audio/'+song.filename,
       outputSongURL: '/outputs/audio/'+song.filename+'.mp3',//'/outputs/audio/'+song.filename,
     });
+  }
 
+  outputAudioUpdated(resp) {
+    if (this.state && this.state.song) {
+      if (resp.data == this.state.song.filename) {
+        this.setState({playingOutput: false});
+        this.outputWavesurfer.destroy();
+        this.outputWavesurfer = this.makeOutputWavesurfer();
+        this.outputWavesurfer.load(this.state.outputSongURL);
+      }
+    }
   }
 
   componentDidMount() {
     socket.on(this.props.params.id, this.songUpdateBroadcast);
     socket.on(Events.getOneSong, this.curSongUpdated);
+    socket.on(Events.camanToAudio, this.outputAudioUpdated);
 
     this.populate();
   }
@@ -145,6 +173,7 @@ export default class ViewOnPage extends React.Component {
   componentWillUnmount() {
     socket.removeListener(this.props.params.id, this.songUpdateBroadcast);
     socket.removeListener(Events.getOneSong, this.curSongUpdated);
+    socket.removeListener(Events.camanToAudio, this.outputAudioUpdated);
     this.setState({playingInput: false});
     this.setState({playingOutput: false});
     if (this.inputWavesurfer) 
@@ -166,14 +195,27 @@ export default class ViewOnPage extends React.Component {
       <div>
       { this.state.song ? 
         <div>
+        <br />
          <div>
-          { this.state.song.hasAlbumArt &&
-            <img src={this.state.song.albumArtPath} style = {css.image}/>
+          { this.state.song.hasAlbumArt ?
+            <div>
+              <img src={this.state.song.albumArtPath} style = {css.albumArt}/>
+              <div style={css.inline}>
+                <h1 style={css.title}>{this.state.song.title}</h1>
+                <h3 >{this.state.song.artist} | {this.state.song.album} | {this.state.song.length+" "} 
+                   | {this.state.song.format} </h3>
+              </div>
+           </div>
+           :
+           <div>
+                <h1>{this.state.song.title}</h1>
+                <h3 >{this.state.song.artist} | {this.state.song.album} | {this.state.song.length+" "} 
+                   | {this.state.song.format} </h3>
+
+
+           </div>
           }
-          <h1>{this.state.song.title}</h1>
         </div>
-        <h3>{this.state.song.artist} | {this.state.song.album} | {this.state.song.length+" "} 
-             | {this.state.song.format} </h3>
 
 				<div className="uk-grid">
 
@@ -192,14 +234,14 @@ export default class ViewOnPage extends React.Component {
                 <li><a href={'/transform/'+this.state.song.filename+'/redshift'} >Red Shift</a></li>
                 <li><a href={'/transform/'+this.state.song.filename+'/blueshift'} >Blue Shift</a></li>
                 <li><a href={'/transform/'+this.state.song.filename+'/greenshift'} >Green Shift</a></li>
-                <li><a href={'/transform/'+this.state.song.filename+'/dream'} >Google Deep Dream</a></li>
+                <li><a href={'/transform/'+this.state.song.filename+'/passthrough'} >Passthrough</a></li>
                 </ul>
                 </div>
                 </div>
           }
         }
 
-        <div className='uk-width-1-3'>
+        <div className='uk-width-1-2'>
         <br />
         <h2>Original </h2>
         <div id="waveInput" style={css.wave}>
@@ -239,7 +281,9 @@ export default class ViewOnPage extends React.Component {
               </a>
               */
               }
-              <CamanFrame imgPath={'/outputs/images/'+this.state.song.filename+'.png'} />
+              <CamanSliders imgPath={'/outputs/images/'+this.state.song.filename+'.png'} imgId={this.props.params.id} />
+              <p> Try the overlay transform: </p>
+              <OverlayUpload imgId={this.props.params.id}/>
             </div>
               : 
                 this.state.song.startedTransform ?
