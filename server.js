@@ -111,11 +111,14 @@ var imageTransformCompleteCB = function(filename) {
 var fileFilterMP3 = function(req, file, cb) {
   var type = file.mimetype;
   console.log(type);
-  if (type === 'audio/mpeg') {
+  /*
+  if (type == 'audio/mpeg') {
     cb(null, true); 
   } else {
     cb(null, false);
   }
+  */
+  cb(null, true);
 }
 
 var fileFilterImg = function(req, file, cb) {
