@@ -28,7 +28,7 @@ export default class StatsPage extends React.Component {
       _this.setState({
         songs : songs
       });
-      pie(_this.state.songs, "#testPie");
+      pie(_this.state.songs, "testPie");
 
     });
 
@@ -39,19 +39,15 @@ export default class StatsPage extends React.Component {
   }
 
   componentDidUpdate() {
-    console.log("DID UPDATE");
   }
 
   componentWillUpdate() {
-    console.log("WILL UPDATE");
   }
 
   render() {
     return (
       <div className="uk-grid">
-      <script src="test.js"></script>
         <div className="uk-width-1-1 uk-row-first">
-          <div id="testPie" />
           <h2> Statistics </h2>
             {this.state.songs.map(function(song) {
               var date = new Date(song.created);
@@ -74,8 +70,9 @@ export default class StatsPage extends React.Component {
                   <td>{song.format}</td>
                 </tr>
                 */
-              return <p>{song._id}</p>
+              //return <p>{song._id}</p>
             }) }
+          <div id="testPie"/>
         </div>
       </div>
       );
