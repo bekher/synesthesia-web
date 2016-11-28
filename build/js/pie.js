@@ -1,9 +1,12 @@
 var transformPie = function (songs, id) {
 
-	temp = {}
-	data = []
+	temp = {};
+	data = [];
+    transforms = [];
 
-	for (var s in songs) {
+	for (var a in songs) {
+        s = songs[a]
+
 		if (temp[s.transform]) {
 			temp[s.transform] = temp[s.transform] + 1
 		} else {
@@ -17,25 +20,27 @@ var transformPie = function (songs, id) {
 				label: k,
 				value: temp[k]
 			});
+
+            transforms.push(k);
 		}
 	}
 
-	var svg = d3.select("#" + id)
+	var svg = d3.select('#' + id)
 		.append("svg")
 		.append("g")
 
 	svg.append("g")
-		.attr("class", id + "-slices");
+		.attr("class", "slices");
 	svg.append("g")
-		.attr("class", id + "-labels");
+		.attr("class", "labels");
 	svg.append("g")
-		.attr("class", id + "-lines");
+		.attr("class", "lines");
 
 	var width = 960,
 	    height = 450,
 		radius = Math.min(width, height) / 2;
 
-	var pie = d3.pie()
+	var pie = d3.layout.pie()
 		.sort(null)
 		.value(function(d) {
 			return d.value;
@@ -53,28 +58,22 @@ var transformPie = function (songs, id) {
 
 	var key = function(d){ return d.data.label; };
 
-	var color = d3.scaleLinear()
-		.domain([0, data.length])
-		.range(["#8080ff", "#ff99ff"])
-		.interpolate(d3.interpolateRgb);
+	var color = d3.scale.linear()
+		.domain([0,transforms.length])
+		.range(["#8080ff", "#ff99ff"]).interpolate(d3.interpolateRgb);
 
-	function randomData (){
-		var labels = color.domain();
-		return labels.map(function(label){
-			return { label: label, value: Math.random() }
-		});
-	}
+	change(data);
 
-	var change = function(data) {
+	function change(data) {
 
 		/* ------- PIE SLICES -------*/
-		var slice = svg.select("." + id + "-slices").selectAll("path.slice")
+		var slice = svg.select(".slices").selectAll("path.slice")
 			.data(pie(data), key);
 
 		slice.enter()
 			.insert("path")
-			.style("fill", function(d) { return color(d.data.label); })
-			.attr("class", id + "-slice");
+			.style("fill", function(d) { return color(transforms.indexOf(d.data.label)); })
+			.attr("class", "slice");
 
 		slice		
 			.transition().duration(1000)
@@ -92,12 +91,13 @@ var transformPie = function (songs, id) {
 
 		/* ------- TEXT LABELS -------*/
 
-		var text = svg.select("." + id +  "-labels").selectAll("text")
+		var text = svg.select(".labels").selectAll("text")
 			.data(pie(data), key);
 
 		text.enter()
 			.append("text")
 			.attr("dy", ".35em")
+            .style("fill", "white")
 			.text(function(d) {
 				return d.data.label;
 			});
@@ -133,7 +133,7 @@ var transformPie = function (songs, id) {
 
 		/* ------- SLICE TO TEXT POLYLINES -------*/
 
-		var polyline = svg.select("." + id + "-lines").selectAll("polyline")
+		var polyline = svg.select(".lines").selectAll("polyline")
 			.data(pie(data), key);
 		
 		polyline.enter()
@@ -156,7 +156,5 @@ var transformPie = function (songs, id) {
 			.remove();
 	};
 
-    change(data);
-
-    return change;
+	return change;
 }
