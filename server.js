@@ -253,9 +253,6 @@ if (config.dev) {
   app.get('/pub/app.js', function(req, res) {
     res.sendFile(path.join(__dirname, 'build/app.js'));
   });
-  app.get('/pub/pie.js', function(req,res) {
-    res.sendFile(path.join(__dirname, 'build/pie.js'));
-  });
 }
 app.use(function(err, req, res, next) {
   if (typeof err !== 'string'){
@@ -269,6 +266,7 @@ app.use('/outputs/audio', express.static(__dirname+'/outputs/audio', {redirect: 
 app.use('/outputs/images', express.static(__dirname+'/outputs/images', {redirect: false}));
 app.use('/albumArt', express.static(__dirname+'/albumArt', {redirect: false}));
 app.use('/css', express.static(__dirname+'/build/css', {redirect: false}));
+app.use('/js', express.static(__dirname+'/build/js', {redirect: false}));
 
 app.get('/app(|/*)|', function(req, res) {
   res.sendFile(path.join(__dirname, 'build/index.html'));
