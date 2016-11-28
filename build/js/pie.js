@@ -25,6 +25,8 @@ var transformPie = function (songs, id) {
 		}
 	}
 
+    d3.select("#" + id).selectAll('*').remove();
+
 	var svg = d3.select('#' + id)
 		.append("svg")
 		.append("g")
@@ -60,7 +62,7 @@ var transformPie = function (songs, id) {
 
 	var color = d3.scale.linear()
 		.domain([0,transforms.length])
-		.range(["#8080ff", "#ff99ff"]).interpolate(d3.interpolateRgb);
+		.range(["#8080ff", "#ff99ff"]).interpolate(d3.interpolateHcl);
 
 	change(data);
 
