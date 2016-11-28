@@ -35,7 +35,7 @@ var transformPie = function (songs, id) {
 	    height = 450,
 		radius = Math.min(width, height) / 2;
 
-	var pie = d3.layout.pie()
+	var pie = d3.pie()
 		.sort(null)
 		.value(function(d) {
 			return d.value;

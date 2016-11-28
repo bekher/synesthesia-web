@@ -30,6 +30,7 @@ export default class StatsPage extends React.Component {
   componentDidMount() {
     //ViewStore.listen(_this.onChange);
     this.populate();
+    pie("#testPie");
   }
   componentWillUnmount() {
     //ViewStore.unlisten(this._onchange);
@@ -48,6 +49,7 @@ export default class StatsPage extends React.Component {
       <div className="uk-grid">
       <script src="test.js"></script>
         <div className="uk-width-1-1 uk-row-first">
+          <div id="testPie" />
           <h2> Statistics </h2>
             {this.state.songs.map(function(song) {
               var date = new Date(song.created);
