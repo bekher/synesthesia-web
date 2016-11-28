@@ -17,20 +17,22 @@ export default class StatsPage extends React.Component {
       songs : []
     };
 
+  }
+
+  componentDidMount() {
+    //ViewStore.listen(_this.onChange);
+    var _this = this;
     socket.on(Events.getAllSongs, function(resp) {
       var songs = resp.data || [];
 
       _this.setState({
         songs : songs
       });
+      pie(_this.state.songs, "#testPie");
 
     });
-  }
 
-  componentDidMount() {
-    //ViewStore.listen(_this.onChange);
     this.populate();
-    pie("#testPie");
   }
   componentWillUnmount() {
     //ViewStore.unlisten(this._onchange);
