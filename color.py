@@ -4,6 +4,7 @@ from numpy import *
 from collections import Counter
 import random
 import sys
+import os
 
 def metallic(arr):
     for i in range(0, len(arr)):
@@ -108,6 +109,28 @@ def pitchshift(snd_array, n, window_size=2**13, h=2**11):
     stretched = stretch(snd_array, 1.0/factor, window_size, h)
     return speedx(stretched[window_size:], factor)
 
+def overlay(song_image, other_pic):
+    print os.system("convert %s -resize %dx%d\\! bigger_%s" % (other_pic, song_image.size[0], song_image.size[1], other_pic))
+    pic = Image.open("bigger_"+other_pic)
+    pix = pic.load()
+    song_pix = song_image.load()
+    a2 = []
+    idx = 0
+    for y in range(0, song_image.size[1]):  # TODO!
+        for x in range(0, song_image.size[0]):
+            if idx % 12 == 0 or (idx + 1) % 12 == 0 or (idx + 2) % 12 == 0:
+                a2.append(pix[x,y][0])
+                a2.append(pix[x,y][1])
+                a2.append(pix[x,y][2])
+            else:
+                a2.append(song_pix[x,y][0])
+                a2.append(song_pix[x,y][1])
+                a2.append(song_pix[x,y][2])
+            idx += 1
+
+    return a2
+    
+
 name = sys.argv[1]
 transform = sys.argv[2]
 
@@ -148,6 +171,9 @@ elif(transform=="speed"):
 elif(transform == "pitch"):
     arr = pitchshift(arr2, 2)
     stret = 2
+elif(transform == "overlay"):
+    arr = overlay(im, sys.argv[3])  
+
 i = 0
 print("Rewriting file...")
 print im.size
