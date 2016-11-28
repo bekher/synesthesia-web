@@ -49,7 +49,7 @@ export default class CamanSliders extends React.Component {
 
   componentWillUnmount() {
     socket.removeListener(Events.camanTransform, this.transformFinished);
-    socket.removeListener(props.imgId, this.imgRefresh);
+    socket.removeListener(this.props.imgId, this.imgRefresh);
   }
 
   componentDidMount() {
