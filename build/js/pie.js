@@ -101,7 +101,7 @@ var transformPie = function (songs, id) {
 			.attr("dy", ".35em")
             .style("fill", "white")
 			.text(function(d) {
-				return d.data.label;
+				return d.data.label + " (" + d.data.value + ")";
 			});
 		
 		function midAngle(d){
