@@ -229,8 +229,10 @@ export default class ViewOnPage extends React.Component {
                 <li><a href={'/transform/'+this.state.song.filename+'/shuffle'} >Shuffle</a></li>
                 <li><a href={'/transform/'+this.state.song.filename+'/decay'} >Decay</a></li>
                 <li><a href={'/transform/'+this.state.song.filename+'/speed'} >Speed</a></li>
-                <li><a href={'/transform/'+this.state.song.filename+'/extend'} >Extend</a></li>
-                <li><a href={'/transform/'+this.state.song.filename+'/pitch'} >Pitch</a></li>
+                {
+                  //<li><a href={'/transform/'+this.state.song.filename+'/extend'} >Extend</a></li>
+                  //<li><a href={'/transform/'+this.state.song.filename+'/pitch'} >Pitch</a></li>
+                }
                 <li><a href={'/transform/'+this.state.song.filename+'/redshift'} >Red Shift</a></li>
                 <li><a href={'/transform/'+this.state.song.filename+'/blueshift'} >Blue Shift</a></li>
                 <li><a href={'/transform/'+this.state.song.filename+'/greenshift'} >Green Shift</a></li>
@@ -302,8 +304,10 @@ export default class ViewOnPage extends React.Component {
         <a href='/app/#/browse'>Back to browse</a>
           </div>
             : <div>
-            <h2> Song not found 😞</h2>
-            <a href="/app/#/browse">Try browsing for songs that exist </a>
+            {//<h2> Song not found 😞</h2>
+            }
+            <h2> ♫ Loading song ♫  </h2>
+            <a href="/app/#/browse">Back to browse</a>
               </div>
 
       }

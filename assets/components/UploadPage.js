@@ -40,7 +40,7 @@ export default class UploadPage extends React.Component {
           setTimeout(function() {
             window.location.replace("/#/browse/");
 
-          }, 2000);
+          }, 750);
         }
       },
 

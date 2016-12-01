@@ -62,11 +62,13 @@ def decay(arr, jmp=32):
     return arr.flatten()
 
 def extend(arr, jmp):
-    arr = array([arr[i:i+4] for i in range(0, len(arr), 4)])
+    arr = [arr[i:i+4] for i in range(0, len(arr), 4)]
     ret = []
     for i in arr:
         for j in range(jmp):
             ret.append(i)
+    if (len(ret[len(ret) - 1]) != len(ret[len(ret) - 2])):
+        ret[len(ret) - 1] = ret[len(ret) - 2]
     return array(ret).flatten()
 
 def speedx(sound_array, factor):

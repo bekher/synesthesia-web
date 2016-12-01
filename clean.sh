@@ -11,4 +11,4 @@ rm -rf imgUploads/*
 
 echo "dropping bobby tables"
 
-printf "use synes-dev\ndb.songs.drop()" | mongo
+#printf "use synes-dev\ndb.songs.drop()" | mongo
